@@ -1,0 +1,39 @@
+---
+title: "Carbon Majors Emissions"
+description: 
+  Analysis of Carbon Emissions data from TidyTuesday
+author: Veronica De Leon
+date: September 18, 2024
+format:
+  html:
+    code-fold: true
+    code-summary: "Show the code"
+message: false
+warning: false
+
+
+---
+
+[The link to the original data is here](https://github.com/rfordatascience/tidytuesday/blob/master/data/2024/2024-05-21/readme.md)
+
+```{r}
+library(ggplot2)
+library("tidytuesdayR")
+library(dplyr)
+tuesdata <- tidytuesdayR::tt_load('2024-05-21')
+```
+
+```{r}
+emit_co2 <- tuesdata$emissions
+ggplot(emit_co2, aes(x = year, y = total_emissions_MtCO2e, color = commodity)) +
+  geom_point(alpha = 0.2) +
+  facet_wrap(~ commodity) +
+  labs(
+    x = "Year",
+    y = "Total CO2 Emissions",
+    title = "Total Emissions per Commodity per Year",
+    color = "Commodity"
+  ) +
+  theme_minimal ()
+```
+

@@ -1,11 +1,18 @@
 ---
-title: "veronica-2222.github.io"
+image: media/cherry2.png
+toc: false
+about: 
+  template: jolla
+  image-shape: round
+  image-width: 17em
+  image-alt: cherry sewed onto a blue gingham background
+  links:
+    - text: GitHub
+      href: https://github.com/veronica-2222
+    - text: Email
+      href: mailto:vjdt2023@mymail.pomona.edu
 ---
 
-This is a Quarto website.
+Hi! I'm Veronica (she/her) and welcome to my website. I love math and am currently getting into data science. More about me and my site on the 'About' page.
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
 
-```{r}
-1 + 1
-```

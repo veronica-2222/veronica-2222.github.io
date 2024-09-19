@@ -1,0 +1,5 @@
+---
+title: "Data Viz"
+---
+
+### Visuals created from TidyTuesday data are on this page. Feel free to look around :)

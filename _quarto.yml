@@ -3,18 +3,35 @@ project:
   output-dir: docs
 
 website:
-  title: "veronica-2222.github.io"
+  title: "Veronica De Leon"
   navbar:
+    background: primary
+    search: true
     left:
       - href: index.qmd
         text: Home
       - about.qmd
+      - sidebar:dataviz
+      
+  sidebar:
+    - id: dataviz
+      title: "Data Viz"
+      style: "docked"
+      background: light
+      collapse-level: 2
+      contents: 
+        - dataviz.qmd
+        - tidytues1.qmd
+        - tidytues2.qmd
 
 format:
   html:
-    theme: cosmo
+    theme: 
+      light: Sandstone
+      dark: Lux
     css: styles.css
     toc: true
 
 editor: visual
+
 

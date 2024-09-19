@@ -1,16 +1,46 @@
 [
   {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
+    "objectID": "dataviz.html",
+    "href": "dataviz.html",
+    "title": "Data Viz",
     "section": "",
-    "text": "About this site\n\n1 + 1\n\n[1] 2"
+    "text": "Visuals created from TidyTuesday data are on this page. Feel free to look around :)",
+    "crumbs": [
+      "Data Viz"
+    ]
   },
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "veronica-2222.github.io",
+    "title": "Veronica De Leon",
     "section": "",
-    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites.\n\n1 + 1\n\n[1] 2"
+    "text": "Hi! I’m Veronica (she/her) and welcome to my website. I love math and am currently getting into data science. More about me and my site on the ‘About’ page."
+  },
+  {
+    "objectID": "tidytues2.html",
+    "href": "tidytues2.html",
+    "title": "Chocolate Rating",
+    "section": "",
+    "text": "The link to the original data is here\n\n\nShow the code\nlibrary(ggplot2)\nlibrary(\"tidytuesdayR\")\nlibrary(dplyr)\ntuesdata &lt;- tidytuesdayR::tt_load('2022-01-18')\n\n\n\n\nShow the code\nchocolates &lt;- tuesdata$chocolate |&gt;\n  select(cocoa_percent, rating) |&gt;\n  group_by(cocoa_percent) |&gt;\n  summarize(avg_rating = mean(rating), na.rm = TRUE) |&gt;\n  \n  filter(cocoa_percent &gt;= \"75%\")\n\n\n\n\nShow the code\nchocolates |&gt;\n  ggplot(aes(cocoa_percent, avg_rating)) +\n  geom_point(color = \"brown\", alpha = 0.5, size = 3) +\n  labs(\n    x = \"Cocoa Percent\",\n    y = \"Average Chocolate Rating\", \n    title = \"Chocolate Rating by Cocoa Percent\"\n  ) +\n  theme_minimal()",
+    "crumbs": [
+      "Chocolate Rating"
+    ]
+  },
+  {
+    "objectID": "tidytues1.html",
+    "href": "tidytues1.html",
+    "title": "Carbon Majors Emissions",
+    "section": "",
+    "text": "The link to the original data is here\n\n\nShow the code\nlibrary(ggplot2)\nlibrary(\"tidytuesdayR\")\nlibrary(dplyr)\ntuesdata &lt;- tidytuesdayR::tt_load('2024-05-21')\n\n\n\n\nShow the code\nemit_co2 &lt;- tuesdata$emissions\nggplot(emit_co2, aes(x = year, y = total_emissions_MtCO2e, color = commodity)) +\n  geom_point(alpha = 0.2) +\n  facet_wrap(~ commodity) +\n  labs(\n    x = \"Year\",\n    y = \"Total CO2 Emissions\",\n    title = \"Total Emissions per Commodity per Year\",\n    color = \"Commodity\"\n  ) +\n  theme_minimal ()",
+    "crumbs": [
+      "Carbon Majors Emissions"
+    ]
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "Veronica De Leon",
+    "section": "",
+    "text": "About Author\nI was born in the Philippines but I’ve been living in Los Angeles for about ten years (the building pictured is in Downtown LA). I’m currently studying at Pomona College for mathematics and statistics. I love crafting, specifically knitting and sewing (the image on my home page is a design that I sewed onto a shirt).\n\n\nAbout this site\nThis site currently contains projects for my Foundations of Data Science DS002 class."
   }
 ]
