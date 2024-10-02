@@ -1,0 +1,85 @@
+---
+title: "miniproj_2"
+---
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(stringr)
+```
+
+```{r}
+netflix <- read.csv("../veronica-2222.github.io/netflix_titles.csv")
+```
+
+```{r}
+# Which Comedy TV shows were added on netflix on 2021
+shows <- netflix |>
+  select(type, duration, title, date_added, listed_in) |>
+  group_by(type) |>
+  filter(str_detect(type, "TV Show")) |>
+  filter(str_detect(date_added , "2021")) |>
+  filter(str_detect(listed_in, "Comedies")) |>
+  mutate(season = str_sub(duration, 1, 1)) |> 
+  summarize(type, title, season)
+
+shows
+```
+
+```{r}
+shows |>
+  ggplot(aes(y = season)) +
+  geom_bar()
+```
+
+```{r}
+#International Shows/Movies
+international <- netflix |>
+  select(type, title, country, listed_in) |>
+  group_by(country) |>
+  filter(str_detect(listed_in, "International")) |>
+  summarize(type, title, country, listed_in) 
+
+international
+```
+
+```{r}
+international_over_fifty <- international |>
+  select(title, type, country, listed_in) |>
+  group_by(country) |>
+  summarize(count = n()) |>
+  filter(count >= 50) |>
+  arrange(desc(count))
+
+international_over_fifty 
+```
+
+```{r}
+international_over_fifty <- international |>
+  select(title, type, country, listed_in) |>
+  group_by(country) |>
+  mutate(count = n()) |>
+  filter(count >= 50) |>
+  arrange(desc(count))
+
+international_over_fifty |>
+  ggplot(aes(y = fct_reorder(country, count))) +
+  geom_bar()
+```
+
+```{r}
+# Release year vs date added on Netflix
+
+ netflix |>
+  str_replace_all(rating, c("NA" = "other"))
+  
+```
+
+```{r}
+#table of Titles and type together in one string
+
+full_title <- netflix |>
+  str_c(title, country, sep=':') |>
+  summarize(title, country, full_title)
+
+```
