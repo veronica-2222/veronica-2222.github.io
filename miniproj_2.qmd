@@ -27,7 +27,6 @@ netflix <- read.csv("../veronica-2222.github.io/netflix_titles.csv")
 ### General Netflix Data
 
 ```{r}
-# Release year vs date added on Netflix
 netflix |>
   select(release_year, date_added) |>
   mutate(added_year = str_extract(date_added, "(?<=, ).+(?=$)")) |>
@@ -45,8 +44,6 @@ theme_minimal()
 The graph displays the difference between the year a show or movie was released versus the year it was added on Netflix. The opaqueness of the points suggests when majority of the shows and movies were added on Netflix. In this case it seems as if majority of the shows and movies were added in 2016 and onward.
 
 ```{r}
-# rating vs. listed_in (but only take first category it's listed in) -- need to use regular expression to only get the thing after TV- and to only get first category in listed in
-
 netflix|>
   select(rating, listed_in) |>
   mutate(tv_rating = str_extract(rating, "(?<=-).+(?=$)")) |>
@@ -75,7 +72,6 @@ The bar reveals the proportion of shows' first genre they are listed under and t
 ##### Comedies and Christmas Eve
 
 ```{r}
-# Which Comedy TV shows were added on netflix on 2021
 netflix |>
   select(type, duration, title, date_added, listed_in) |>
   group_by(type) |>
