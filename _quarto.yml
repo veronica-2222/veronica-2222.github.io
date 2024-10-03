@@ -24,6 +24,7 @@ website:
         - dataviz.qmd
         - tidytues1.qmd
         - tidytues2.qmd
+        - miniproj_2.qmd
 
 format:
   html:
