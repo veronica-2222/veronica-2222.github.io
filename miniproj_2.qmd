@@ -69,17 +69,39 @@ international_over_fifty |>
 
 ```{r}
 # Release year vs date added on Netflix
+netflix |>
+  select(release_year, date_added) |>
+  mutate(added_year = str_extract(date_added, "(?<=, ).+(?=$)")) |>
+  ggplot(aes(x = release_year, y = added_year)) +
+  geom_point()
+```
 
- netflix |>
-  str_replace_all(rating, c("NA" = "other"))
-  
+\
+
+```{r}
+# table of Titles and type together in one string of movies/tv shows added on netflix on christmas eve
+
+  netflix |>
+  select(title, type, date_added) |>
+  mutate(movieinfo =  str_c(title, type, sep=': ')) |>
+  mutate(first_date = str_extract(date_added, ".+(?=,)")) |>
+    filter(first_date == "December 24") |>
+    select(movieinfo, first_date)
+ 
 ```
 
 ```{r}
-#table of Titles and type together in one string
+# rating vs. listed_in (but only take first category it's listed in) -- need to use regular expression to only get the thing after TV- and to only get first category in listed in
 
-full_title <- netflix |>
-  str_c(title, country, sep=':') |>
-  summarize(title, country, full_title)
+netflix|>
+  select(rating, listed_in) |>
+  mutate(tv_rating = str_extract(rating, "(?<=-).+(?=$)")) |>
+  mutate(first_listed = str_extract(listed_in, "\\w+")) |>
+  filter(first_listed %in% c("Action", "Crime", "Dramas", "Comedies")) |>
+  ggplot(aes(x = tv_rating, color = first_listed)) +
+  geom_bar() 
+
+#groupby count of tv_ratings
+#filter action, comedies, crime, dramas
 
 ```
