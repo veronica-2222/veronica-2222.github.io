@@ -222,7 +222,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#about-the-data" id="toc-about-the-data" class="nav-link active" data-scroll-target="#about-the-data">About the Data</a></li>
+  <li><a href="#about-the-simulation" id="toc-about-the-simulation" class="nav-link" data-scroll-target="#about-the-simulation">About the Simulation</a></li>
+  <li><a href="#simulation" id="toc-simulation" class="nav-link" data-scroll-target="#simulation">Simulation</a></li>
+  <li><a href="#summary-of-simulation" id="toc-summary-of-simulation" class="nav-link" data-scroll-target="#summary-of-simulation">Summary of Simulation</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -271,79 +280,108 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<section id="about-the-data" class="level5">
-<h5 class="anchored" data-anchor-id="about-the-data">About the Data</h5>
-<p>For this project, I used the ‘Dream’ data set from the openintro package. The data set came from SurveyUSA, News Poll and was collected on January 27-29, 2012. The poll survered the views of 910 people on the DREAM Act (a legislative proposed to give undocumented immigrants temporary residency so that they could work in the US). Those surveyed were categorized into three ideologies: Conservative, Liberal, and Moderate. Their responses were either No, Not Sure, or Yes.</p>
-<p>From the observed data of the data set, I noticed that the proportion of Liberals in support of the Dream Act (0.65) is greater than the proportion of Conservatives (0.5) and the proportion of Moderates (0.48). So, I set to test if there is a relationship between ideology and whether or not they are in support of the dream act.</p>
+<section id="about-the-data" class="level3">
+<h3 class="anchored" data-anchor-id="about-the-data">About the Data</h3>
+<p><a href="https://openintrostat.github.io/openintro/reference/dream.html">The link to the original data is here</a></p>
+<p>For this project, I used the ‘Dream’ data set from the openintro package. The data set came from SurveyUSA, News Poll and was collected on January 27-29, 2012. The poll surveyed the views of 910 people on the DREAM Act (a legislative proposed to give undocumented immigrants temporary residency so that they could work in the US). Those surveyed were categorized into three ideologies: Liberal, Moderate, and Conservative. Their responses were either No, Not Sure, or Yes.</p>
+</section>
+<section id="about-the-simulation" class="level3">
+<h3 class="anchored" data-anchor-id="about-the-simulation">About the Simulation</h3>
+<p>From the observed data of the data set, I noticed that the proportion of Liberals in support of the Dream Act (0.65) is greater than the proportion of Conservatives (0.5) and the proportion of Moderates (0.48). So, I set to test if there is truly a relationship between ideology and whether they are in support of the DREAM Act by comparing null plots and the observed plot.</p>
+<p>Under the null, the proportions between ideologies in support of the DREAM Act are equal . So, when we compare the null plots and observed plot, we are checking to see if our observed plot differs from the null plots. If we can identify the observed plot from the null plots, then this gives us evidence to reject the null, and believe that there is a relationship between ideology and their support of the DREAM Act.</p>
+</section>
+<section id="simulation" class="level3">
+<h3 class="anchored" data-anchor-id="simulation">Simulation</h3>
+<p>The data set was edited so that the rows of the ideology column only included the first letter of each of the ideologies for simplicity. They were also releveled so that Liberal was on the left, Moderate was in the middle, and Conservative was on the right.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#need to remove "not sure" stance</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>obs_dream <span class="ot">&lt;-</span> dream <span class="sc">|&gt;</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(ideology) <span class="sc">|&gt;</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ideology =</span> <span class="fu">as.character</span>(ideology)) <span class="sc">|&gt;</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ideology =</span> <span class="fu">str_extract</span>(ideology, <span class="st">"</span><span class="sc">\\</span><span class="st">w"</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ideology =</span> <span class="fu">as.factor</span>(ideology)) <span class="sc">|&gt;</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ideology =</span> <span class="fu">fct_relevel</span>(ideology, <span class="fu">c</span>(<span class="st">"L"</span>, <span class="st">"M"</span>, <span class="st">"C"</span>))) <span class="sc">|&gt;</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">repeated =</span> <span class="dv">7</span>) </span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>obs_dream<span class="sc">|&gt;</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>   <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ideology, <span class="at">fill =</span> stance)) <span class="sc">+</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>repeated)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>dream <span class="ot">&lt;-</span> dream <span class="sc">|&gt;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ideology =</span> <span class="fu">as.character</span>(ideology)) <span class="sc">|&gt;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ideology =</span> <span class="fu">str_extract</span>(ideology, <span class="st">"</span><span class="sc">\\</span><span class="st">w"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ideology =</span> <span class="fu">as.factor</span>(ideology)) <span class="sc">|&gt;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ideology =</span> <span class="fu">fct_relevel</span>(ideology, <span class="fu">c</span>(<span class="st">"L"</span>, <span class="st">"M"</span>, <span class="st">"C"</span>))) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Here is the “statistic” in a form of a bar graph. This is our observed plot as it uses the information provided by the data set. We can see that the proportion of ‘Yes’, shaded in blue, is greater for Liberal.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#to know which panel to randomly place the plot in when comparing with the null</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">47</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sample</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>), <span class="at">size =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 18</code></pre>
+</div>
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>obs_dream <span class="ot">&lt;-</span> dream <span class="sc">|&gt;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(ideology) <span class="sc">|&gt;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">repeated =</span> <span class="dv">18</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>obs_dream<span class="sc">|&gt;</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>   <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ideology, <span class="at">fill =</span> stance)) <span class="sc">+</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"fill"</span>) <span class="sc">+</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>repeated)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="miniproj_3_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="miniproj_3_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
+<p>Then I created a function that conducts a permutation test by reshuffling the ideologies, but keeping the stance the same for each row.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#function to permute</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>random_dream <span class="ot">&lt;-</span> <span class="cf">function</span>(repeated, num_ideology){</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  ideology <span class="ot">=</span> <span class="fu">sample</span>(<span class="fu">c</span>(<span class="st">"L"</span>, <span class="st">"M"</span>, <span class="st">"C"</span>), <span class="at">size =</span> num_ideology, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  stance <span class="ot">=</span> <span class="fu">sample</span>(<span class="fu">c</span>(<span class="st">"Yes"</span>, <span class="st">"No"</span>, <span class="st">"Not sure"</span>))</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(<span class="at">repeated =</span> repeated, <span class="at">ideology =</span> <span class="fu">as.factor</span>(ideology), <span class="at">stance =</span> stance) <span class="sc">|&gt;</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(ideology) <span class="sc">|&gt;</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">ideology =</span> <span class="fu">fct_relevel</span>(ideology, <span class="fu">c</span>(<span class="st">"L"</span>, <span class="st">"M"</span>, <span class="st">"C"</span>))) <span class="sc">|&gt;</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">stance =</span> <span class="fu">fct_relevel</span>(stance, <span class="fu">c</span>(<span class="st">"No"</span>, <span class="st">"Not sure"</span>, <span class="st">"Yes"</span>)))</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>} </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>permute <span class="ot">&lt;-</span> <span class="cf">function</span>(rep){</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  dream <span class="sc">|&gt;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">ideology =</span> <span class="fu">sample</span>(<span class="fu">c</span>(<span class="st">"L"</span>, <span class="st">"M"</span>, <span class="st">"C"</span>), <span class="at">size =</span> <span class="dv">910</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">ideology =</span> <span class="fu">fct_relevel</span>(ideology, <span class="fu">c</span>(<span class="st">"L"</span>, <span class="st">"M"</span>, <span class="st">"C"</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">repeated =</span> rep)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
+<p>Here I mapped out 19 data frames (leaving out 18 because that’s reserved for the observed) that outputs what we’d expect under the null, or if the likelihood of each ideology to have a certain stance is equal.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#under the null</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">47</span>)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>null_dream_one <span class="ot">&lt;-</span> <span class="fu">map</span>((<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>), random_dream, <span class="at">num_ideology =</span> <span class="dv">909</span>)<span class="sc">|&gt;</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">list_rbind</span>() </span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>null_dream_two <span class="ot">&lt;-</span> <span class="fu">map</span>((<span class="dv">8</span><span class="sc">:</span><span class="dv">20</span>), random_dream, <span class="at">num_ideology =</span> <span class="dv">909</span>) <span class="sc">|&gt;</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list_rbind</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#under the null</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">47</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>null_dream_one <span class="ot">&lt;-</span> <span class="fu">map</span>((<span class="dv">1</span><span class="sc">:</span><span class="dv">17</span>), permute)<span class="sc">|&gt;</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">list_rbind</span>() </span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>null_dream_two <span class="ot">&lt;-</span> <span class="fu">map</span>((<span class="dv">19</span><span class="sc">:</span><span class="dv">20</span>), permute) <span class="sc">|&gt;</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list_rbind</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
+<p>Finally, I combined all the data frames (the statistic and the 19 null data frames) and combined all of the bar graphs from the 20 data frames. In the very beginning, I used a sample to generate a number so that I know which panel to place the observed plot in. Through that, the observed plot was placed in Panel #18.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#to plot all the graphs</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rbind</span>(obs_dream, null_dream_one, null_dream_two) <span class="sc">|&gt;</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ideology, <span class="at">fill =</span> stance)) <span class="sc">+</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>repeated) <span class="sc">+</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Ideology"</span>, <span class="at">y =</span> <span class="st">"Proportion of Responses"</span>, <span class="at">title =</span> <span class="st">"Comparison of Null Plots vs. Observed Plot"</span>, <span class="at">fill =</span> <span class="st">"Stance"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">#to plot all the graphs</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rbind</span>(obs_dream, null_dream_one, null_dream_two) <span class="sc">|&gt;</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ideology, <span class="at">fill =</span> stance)) <span class="sc">+</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"fill"</span>) <span class="sc">+</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>repeated) <span class="sc">+</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Ideology"</span>, <span class="at">y =</span> <span class="st">"Proportion of Responses"</span>, <span class="at">title =</span> <span class="st">"Comparison of Null Plots vs. Observed Plot"</span>, <span class="at">fill =</span> <span class="st">"Stance"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="miniproj_3_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="miniproj_3_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
+<p>As we can see from the figure above, most of the shading of blue (which is what we’re interested in as it shows the proportion of “Yes”) is almost leveled, except for Panel #18. So, the observed plot (Panel #18) does stand out from the rest of the bar graphs as the shading of blue for “L” is greater compared to the others. This figure provides evidence to reject the null hypothesis, which hypothesized that the proportion of “Yes” is equal among the ideologies.</p>
+</section>
+<section id="summary-of-simulation" class="level3">
+<h3 class="anchored" data-anchor-id="summary-of-simulation">Summary of Simulation</h3>
+<p>I began this study by observing the data set and noticing that there is a greater proportion of Liberals who are in support of the DREAM Act. I tested this hypothesis by shuffling the order of the ideologies, via my <code>permute</code> function, to see if it was common to get the order of ideologies of the original data set. To compare the observation from the 19 reshuffles, I plotted their bar graphs and checked to see if the observed bar graph was identifiable among the bar graphs of the permuted data frames, and it was. So, we have reason to believe that there is a greater proportion of Liberals in support of the DREAM Act when compared to Moderates and Conservatives.</p>
 
 
 </section>

@@ -20,64 +20,83 @@ library(stringr)
 
 ### About the Data
 
-For this project, I used the 'Dream' data set from the openintro package. The data set came from SurveyUSA, News Poll and was collected on January 27-29, 2012. The poll survered the views of 910 people on the DREAM Act (a legislative proposed to give undocumented immigrants temporary residency so that they could work in the US). Those surveyed were categorized into three ideologies: Liberal, Moderate, and Conservative. Their responses were either No, Not Sure, or Yes.
+[The link to the original data is here](https://openintrostat.github.io/openintro/reference/dream.html)
+
+For this project, I used the 'Dream' data set from the openintro package. The data set came from SurveyUSA, News Poll and was collected on January 27-29, 2012. The poll surveyed the views of 910 people on the DREAM Act (a legislative proposed to give undocumented immigrants temporary residency so that they could work in the US). Those surveyed were categorized into three ideologies: Liberal, Moderate, and Conservative. Their responses were either No, Not Sure, or Yes.
 
 ### About the Simulation
 
-From the observed data of the data set, I noticed that the proportion of Liberals in support of the Dream Act (0.65) is greater than the proportion of Conservatives (0.5) and the proportion of Moderates (0.48). So, I set to test if there is truly a relationship between ideology and whether or not they are in support of the DREAM Act by comparing null plots and the observed plot.
+From the observed data of the data set, I noticed that the proportion of Liberals in support of the Dream Act (0.65) is greater than the proportion of Conservatives (0.5) and the proportion of Moderates (0.48). So, I set to test if there is truly a relationship between ideology and whether they are in support of the DREAM Act by comparing null plots and the observed plot.
 
-Under the null, the proportions between ideologies and responses are equal. So, when we compare the null plots and observed plot, we are checking to see if our observed plot differs from the null plots. If we can identify the observed plot from the null plots, then this gives us evidence to reject the null, and believe that there is a relationship between ideology and their support of the DREAM Act.
+Under the null, the proportions between ideologies in support of the DREAM Act are equal . So, when we compare the null plots and observed plot, we are checking to see if our observed plot differs from the null plots. If we can identify the observed plot from the null plots, then this gives us evidence to reject the null, and believe that there is a relationship between ideology and their support of the DREAM Act.
 
 ### Simulation
 
-Here is the "statistic" in a form of a bar graph. This is our observed plot as it uses the information provided by the data set.
+The data set was edited so that the rows of the ideology column only included the first letter of each of the ideologies for simplicity. They were also releveled so that Liberal was on the left, Moderate was in the middle, and Conservative was on the right.
 
 ```{r}
+dream <- dream |>
+  mutate(ideology = as.character(ideology)) |>
+  mutate(ideology = str_extract(ideology, "\\w")) |>
+  mutate(ideology = as.factor(ideology)) |>
+  mutate(ideology = fct_relevel(ideology, c("L", "M", "C"))) 
+```
+
+Here is the "statistic" in a form of a bar graph. This is our observed plot as it uses the information provided by the data set. We can see that the proportion of 'Yes', shaded in blue, is greater for Liberal.
+
+```{r}
+#to know which panel to randomly place the plot in when comparing with the null
+set.seed(47)
+sample(c(1:20), size = 1)
+
 obs_dream <- dream |>
   group_by(ideology) |>
-  mutate(ideology = as.character(ideology)) |>
-  mutate(ideology = str_extract(ideology, "\\w")) |> 
-  mutate(ideology = as.factor(ideology)) |>
-  mutate(ideology = fct_relevel(ideology, c("L", "M", "C"))) |>
-  mutate(repeated = 7) 
+  mutate(repeated = 18)
 
 obs_dream|>
    ggplot(aes(x = ideology, fill = stance)) +
-    geom_bar() +
+    geom_bar(position = "fill") +
     facet_wrap(~repeated)
 
 ```
 
-This code
+Then I created a function that conducts a permutation test by reshuffling the ideologies, but keeping the stance the same for each row.
 
 ```{r}
-#function to permute
-random_dream <- function(repeated, num_ideology){
-  ideology = sample(c("L", "M", "C"), size = num_ideology, replace = TRUE)
-  stance = sample(c("Yes", "No", "Not sure"))
-  data.frame(repeated = repeated, ideology = as.factor(ideology), stance = stance) |>
-    group_by(ideology) |>
+permute <- function(rep){
+  dream |>
+    mutate(ideology = sample(c("L", "M", "C"), size = 910, replace = TRUE)) |>
     mutate(ideology = fct_relevel(ideology, c("L", "M", "C"))) |>
-    mutate(stance = fct_relevel(stance, c("No", "Not sure", "Yes")))
-} 
+    mutate(repeated = rep)
+}
 ```
+
+Here I mapped out 19 data frames (leaving out 18 because that's reserved for the observed) that outputs what we'd expect under the null, or if the likelihood of each ideology to have a certain stance is equal.
 
 ```{r}
 #under the null
 set.seed(47)
-null_dream_one <- map((1:6), random_dream, num_ideology = 909)|>
+null_dream_one <- map((1:17), permute)|>
     list_rbind() 
 
-null_dream_two <- map((8:20), random_dream, num_ideology = 909) |>
+null_dream_two <- map((19:20), permute) |>
   list_rbind() 
 
 ```
+
+Finally, I combined all the data frames (the statistic and the 19 null data frames) and combined all of the bar graphs from the 20 data frames. In the very beginning, I used a sample to generate a number so that I know which panel to place the observed plot in. Through that, the observed plot was placed in Panel #18.
 
 ```{r}
 #to plot all the graphs
 rbind(obs_dream, null_dream_one, null_dream_two) |>
   ggplot(aes(x = ideology, fill = stance)) +
-  geom_bar() +
+  geom_bar(position = "fill") +
   facet_wrap(~repeated) +
   labs(x = "Ideology", y = "Proportion of Responses", title = "Comparison of Null Plots vs. Observed Plot", fill = "Stance")
 ```
+
+As we can see from the figure above, most of the shading of blue (which is what we're interested in as it shows the proportion of "Yes") is almost leveled, except for Panel #18. So, the observed plot (Panel #18) does stand out from the rest of the bar graphs as the shading of blue for "L" is greater compared to the others. This figure provides evidence to reject the null hypothesis, which hypothesized that the proportion of "Yes" is equal among the ideologies.
+
+### Summary of Simulation
+
+I began this study by observing the data set and noticing that there is a greater proportion of Liberals who are in support of the DREAM Act. I tested this hypothesis by shuffling the order of the ideologies, via my `permute` function, to see if it was common to get the order of ideologies of the original data set. To compare the observation from the 19 reshuffles, I plotted their bar graphs and checked to see if the observed bar graph was identifiable among the bar graphs of the permuted data frames, and it was. So, we have reason to believe that there is a greater proportion of Liberals in support of the DREAM Act when compared to Moderates and Conservatives.
