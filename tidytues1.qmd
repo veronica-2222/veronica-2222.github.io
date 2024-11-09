@@ -10,8 +10,6 @@ format:
     code-summary: "Show the code"
 message: false
 warning: false
-
-
 ---
 
 [The link to the original data is here](https://github.com/rfordatascience/tidytuesday/blob/master/data/2024/2024-05-21/readme.md)
@@ -36,4 +34,3 @@ ggplot(emit_co2, aes(x = year, y = total_emissions_MtCO2e, color = commodity)) +
   ) +
   theme_minimal ()
 ```
-

@@ -28,6 +28,8 @@ chocolates <- tuesdata$chocolate |>
   summarize(avg_rating = mean(rating), na.rm = TRUE) |>
   
   filter(cocoa_percent >= "75%")
+
+chocolates
 ```
 
 ```{r}
@@ -43,4 +45,3 @@ chocolates |>
   theme_minimal()
     
 ```
-

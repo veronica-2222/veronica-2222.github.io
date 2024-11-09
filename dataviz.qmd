@@ -2,4 +2,4 @@
 title: "Data Viz"
 ---
 
-### Visuals created from TidyTuesday data are on this page. Feel free to look around :)
+### Visuals created from TidyTuesday data and mini projects are on this page. Feel free to look around :)
