@@ -56,7 +56,7 @@ obs_dream <- dream |>
 obs_dream|>
    ggplot(aes(x = ideology, fill = stance)) +
     geom_bar(position = "fill") +
-    facet_wrap(~repeated)
+   labs(x = "Ideology", y = "Proportion of Responses", title = "Observed Plot", fill = "Stance")
 
 ```
 
