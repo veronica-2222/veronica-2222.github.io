@@ -1,7 +1,7 @@
 ---
 title: "SQL"
 description: 
-  Creating a Visual Inference 
+  Using SQL to Analyze a database
 author: Veronica De Leon
 date: November 26, 2024
 format:
