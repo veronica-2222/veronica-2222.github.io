@@ -181,7 +181,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#about-the-database" id="toc-about-the-database" class="nav-link active" data-scroll-target="#about-the-database">About the Database</a></li>
   <li><a href="#duplicating-figures" id="toc-duplicating-figures" class="nav-link" data-scroll-target="#duplicating-figures">Duplicating Figures</a></li>
-  <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section"></a></li>
+  <li><a href="#analysis-of-individual-study" id="toc-analysis-of-individual-study" class="nav-link" data-scroll-target="#analysis-of-individual-study">Analysis of Individual Study</a></li>
   </ul>
 </nav>
     </div>
@@ -256,7 +256,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="duplicating-figures" class="level3">
 <h3 class="anchored" data-anchor-id="duplicating-figures">Duplicating Figures</h3>
 <p>For this analysis, I duplicated figure 1 that’s in “An online wideband acoustic immittance (WAI) database and corresponding website” (Voss 2020). The figure shows a line graph of frequency versus mean absorption of the 12 studies found in WAI database as of July 1, 2019. Its legend contains the authors, year, number of individual ears, and equipment used.</p>
-<p>Here I joined ‘Measurements’ and ‘PI_Info’ through the ‘Identifier’ key so that I could create a table with the 12 studies’ authors, year, absorbance, frequency, and instrument.</p>
 <div class="cell" data-output.var="figure">
 <details class="code-fold">
 <summary>Show the code</summary>
@@ -287,7 +286,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="kw">HAVING</span> avg_absorb <span class="op">&gt;</span> <span class="dv">0</span>;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>After creating a table, I used ggplot to recreate the plot from Voss 2020.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Show the code</summary>
@@ -312,9 +310,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
+<p><a href="https://www.ncbi.nlm.nih.gov/core/lw/2.0/html/tileshop_pmc/tileshop_pmc_inline.html?title=Click%20on%20image%20to%20zoom&amp;p=PMC3&amp;id=7093226_nihms-1535071-f0001.jpg">Link to the figure I’m duplicating</a></p>
+<p>To duplicate the figure using SQL, I first had to pull ‘Measurements’ since the table had the absorbance, frequency, and instrument. Through Measurements, I created a table with columns that include the frequency and average absorbance since those are the two main variables being compared in the graph. Because I needed the author names and years of each study, I needed to pull ‘PI_Info’. Since all the information I needed are still split into two tables, I used <code>JOIN</code>, and joined ‘Measurements’ and ‘PI_Info’ through ‘Identifier’ (since they both had that as a column) to combine the columns I needed and create a table with all the information needed. Once I had the table, I used ggplot to produce a figure that’s similar to Figure 1 from Voss 2020. If we compare them, we can see that the graphs are very similar.</p>
 </section>
-<section id="section" class="level3">
-<h3 class="anchored" data-anchor-id="section"></h3>
+<section id="analysis-of-individual-study" class="level3">
+<h3 class="anchored" data-anchor-id="analysis-of-individual-study">Analysis of Individual Study</h3>
+<p>I chose one of the 12 studies that included different races, sex, and ethnicity. A limitation present in this database is that many of the studies don’t have participants of different races, sex, or ethnicity. However, after taking the time to look at each study, I found that the study (Shaver 2013) included different races, sex, and ethnicity. So, this analysis will compare the frequency versus mean absorption across different races from the study (Shaver 2013).</p>
 <div class="cell" data-output.var="figure2">
 <details class="code-fold">
 <summary>Show the code</summary>
@@ -340,7 +341,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>plot2 <span class="sc">|&gt;</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Frequency, <span class="at">y =</span> average_absorb)) <span class="sc">+</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Race)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Race) <span class="sc">+</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Frequency Versus Mean Absorption Across Different Races"</span>,</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Frequency (Hz)"</span>,</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Mean Absorption"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -350,6 +354,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
+<p>For this analysis, I used a similar process as the one I used to duplicate Figure 1 (Voss 2020). I used SQL to pull ‘Measurements’ because it has the data for frequency and absorption. Then I had to pull ‘Subjects’ because it has the data for different races, sex, and ethnicity. To combine the needed information from both tables, I joined Measurements and Subjects through ‘Identifier’ and created a new table with just the author (Shaver), frequency, average absorption, race, sex, and ethnicity. Using the new table and ggplot, I created line graphs based on the race.</p>
+<p>As seen from the plot above, all of the races included in the study have the same line. This might be because of how the study was conducted and how they counted the ears and measured the absorption. But if we simply focus on the different graphs, across the the different races, the average absorption seems to increase when frequency goes up to 3000 Hz but starts to decrease after that.</p>
 
 
 </section>

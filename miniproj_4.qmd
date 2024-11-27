@@ -42,8 +42,6 @@ Subjects <- tbl(con_wai, "Subjects")
 
 For this analysis, I duplicated figure 1 that's in "An online wideband acoustic immittance (WAI) database and corresponding website" (Voss 2020). The figure shows a line graph of frequency versus mean absorption of the 12 studies found in WAI database as of July 1, 2019. Its legend contains the authors, year, number of individual ears, and equipment used.
 
-Here I joined 'Measurements' and 'PI_Info' through the 'Identifier' key so that I could create a table with the 12 studies' authors, year, absorbance, frequency, and instrument.
-
 ```{sql}
 #| connection: con_wai
 #| output.var: "figure"
@@ -75,8 +73,6 @@ GROUP BY Identifier, Instrument, Frequency
 HAVING avg_absorb > 0;
 ```
 
-After creating a table, I used ggplot to recreate the plot from Voss 2020.
-
 ```{r}
 strings |>
   group_by(Identifier) |>
@@ -92,7 +88,13 @@ strings |>
   scale_x_log10() 
 ```
 
-### 
+[Link to the figure I'm duplicating](https://www.ncbi.nlm.nih.gov/core/lw/2.0/html/tileshop_pmc/tileshop_pmc_inline.html?title=Click%20on%20image%20to%20zoom&p=PMC3&id=7093226_nihms-1535071-f0001.jpg)
+
+To duplicate the figure using SQL, I first had to pull 'Measurements' since the table had the absorbance, frequency, and instrument. Through Measurements, I created a table with columns that include the frequency and average absorbance since those are the two main variables being compared in the graph. Because I needed the author names and years of each study, I needed to pull 'PI_Info'. Since all the information I needed are still split into two tables, I used `JOIN`, and joined 'Measurements' and 'PI_Info' through 'Identifier' (since they both had that as a column) to combine the columns I needed and create a table with all the information needed. Once I had the table, I used ggplot to produce a figure that's similar to Figure 1 from Voss 2020. If we compare them, we can see that the graphs are very similar.
+
+### Analysis of Individual Study
+
+I chose one of the 12 studies that included different races, sex, and ethnicity. A limitation present in this database is that many of the studies don't have participants of different races, sex, or ethnicity. However, after taking the time to look at each study, I found that the study (Shaver 2013) included different races, sex, and ethnicity. So, this analysis will compare the frequency versus mean absorption across different races from the study (Shaver 2013).
 
 ```{sql}
 #| connection: con_wai
@@ -119,5 +121,12 @@ GROUP BY Identifier, Frequency, Race
 plot2 |>
   ggplot(aes(x = Frequency, y = average_absorb)) +
   geom_line() +
-  facet_wrap(~Race)
+  facet_wrap(~Race) +
+  labs(title = "Frequency Versus Mean Absorption Across Different Races",
+       x = "Frequency (Hz)",
+       y = "Mean Absorption")
 ```
+
+For this analysis, I used a similar process as the one I used to duplicate Figure 1 (Voss 2020). I used SQL to pull 'Measurements' because it has the data for frequency and absorption. Then I had to pull 'Subjects' because it has the data for different races, sex, and ethnicity. To combine the needed information from both tables, I joined Measurements and Subjects through 'Identifier' and created a new table with just the author (Shaver), frequency, average absorption, race, sex, and ethnicity. Using the new table and ggplot, I created line graphs based on the race.
+
+As seen from the plot above, all of the races included in the study have the same line. This might be because of how the study was conducted and how they counted the ears and measured the absorption. But if we simply focus on the different graphs, across the the different races, the average absorption seems to increase when frequency goes up to 3000 Hz but starts to decrease after that.
