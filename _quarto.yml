@@ -26,6 +26,7 @@ website:
         - tidytues2.qmd
         - miniproj_2.qmd
         - miniproj_3.qmd
+        - miniproj_4.qmd
 
 format:
   html:
