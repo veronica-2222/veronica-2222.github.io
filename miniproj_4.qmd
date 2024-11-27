@@ -1,0 +1,123 @@
+---
+title: "SQL"
+description: 
+  Creating a Visual Inference 
+author: Veronica De Leon
+date: November 26, 2024
+format:
+  html:
+    code-fold: true
+    code-summary: "Show the code"
+message: false
+warning: false
+---
+
+### About the Database
+
+[The link to database](https://www.science.smith.edu/wai-database/)
+
+Using SQL, I queried the Wideband Acoustic Immittance (WAI) Database hosted by Smith College. WAI measurements are made to hopefully provide noninvasive auditory diagnostic tools for everyone. The WAI database hosts WAI measures on ears from all ages(infants, NICU infant, child, adults).
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+library(RMariaDB)
+library(dplyr)
+con_wai <- dbConnect(
+  MariaDB(), host = "scidb.smith.edu",
+  user = "waiuser", password = "smith_waiDB", 
+  dbname = "wai"
+)
+Measurements <- tbl(con_wai, "Measurements")
+PI_Info <- tbl(con_wai, "PI_Info")
+Subjects <- tbl(con_wai, "Subjects")
+
+
+# collect(Measurements)
+```
+
+### Duplicating Figures
+
+For this analysis, I duplicated figure 1 that's in "An online wideband acoustic immittance (WAI) database and corresponding website" (Voss 2020). The figure shows a line graph of frequency versus mean absorption of the 12 studies found in WAI database as of July 1, 2019. Its legend contains the authors, year, number of individual ears, and equipment used.
+
+Here I joined 'Measurements' and 'PI_Info' through the 'Identifier' key so that I could create a table with the 12 studies' authors, year, absorbance, frequency, and instrument.
+
+```{sql}
+#| connection: con_wai
+#| output.var: "figure"
+SELECT Frequency, Identifier, LOG10(Frequency) AS scaled_freq, AVG(Absorbance) AS avg_absorb
+FROM Measurements
+WHERE Identifier IN ("Abur_2014", "Feeney_2017", "Groon_2015", "Lewis_2015", "Liu_2008", "Rosowski_2012", "Shahnaz_2006", "Shaver_2013", "Sun_2016", "Voss_1994", "Voss_2010", "Werner_2010") AND Frequency > 200 AND Frequency < 8000
+GROUP BY Identifier, Frequency
+
+```
+
+```{sql}
+#| connection: con_wai
+#| output.var: "information"
+SELECT p.Identifier, p.AuthorsShortList, p.Year, COUNT(DISTINCT SubjectNumber, Ear) AS distinct_ears
+FROM PI_Info AS p
+LEFT JOIN Measurements AS m ON m.Identifier = p.Identifier
+WHERE p.Identifier IN ("Abur_2014", "Feeney_2017", "Groon_2015", "Lewis_2015", "Liu_2008", "Rosowski_2012", "Shahnaz_2006", "Shaver_2013", "Sun_2016", "Voss_1994", "Voss_2010", "Werner_2010") AND Frequency > 200 AND Frequency < 8000
+GROUP BY Identifier, Instrument;
+```
+
+```{sql}
+#| connection: con_wai
+#| output.var: "strings"
+SELECT p.Identifier, p.AuthorsShortList, p.Year, AVG(Absorbance) AS avg_absorb, m.Frequency, LOG10(Frequency) AS scaled_freq, CONCAT(p.AuthorsShortList, "(", p.Year, ") N =", COUNT(DISTINCT SubjectNumber, Ear), "; ", Instrument) AS key_info
+FROM PI_Info AS p
+LEFT JOIN Measurements AS m ON p.Identifier = m.Identifier
+WHERE p.Identifier IN ("Abur_2014", "Feeney_2017", "Groon_2015", "Lewis_2015", "Liu_2008", "Rosowski_2012", "Shahnaz_2006", "Shaver_2013", "Sun_2016", "Voss_1994", "Voss_2010", "Werner_2010") AND m.Frequency > 200 AND m.Frequency < 8000 
+GROUP BY Identifier, Instrument, Frequency
+HAVING avg_absorb > 0;
+```
+
+After creating a table, I used ggplot to recreate the plot from Voss 2020.
+
+```{r}
+strings |>
+  group_by(Identifier) |>
+  ggplot(aes(x = Frequency, y = avg_absorb, color = key_info)) +
+  geom_line() +
+  ylim(0, 1) +
+  xlim(200, 8000) +
+  labs(x = "Frequency (Hz)",
+       y = "Mean Abosrbance",
+       title = "Mean absorbance from each publication in WAI database",
+       color = "") +
+  theme_bw() +
+  scale_x_log10() 
+```
+
+### 
+
+```{sql}
+#| connection: con_wai
+#| output.var: "figure2"
+SELECT Frequency, Identifier, LOG10(Frequency) AS scaled_freq, AVG(Absorbance) AS average_absorb
+FROM Measurements
+WHERE Identifier IN ("Shaver_2013")
+GROUP BY Identifier, Frequency
+
+```
+
+```{sql}
+#| connection: con_wai
+#| output.var: "plot2"
+SELECT s.Identifier, s.Race, AVG(Absorbance) AS average_absorb, m.Frequency, LOG10(Frequency) AS scaled_freq
+FROM Subjects AS s
+LEFT JOIN Measurements AS m ON m.Identifier = s.Identifier
+WHERE s.Identifier IN ("Shaver_2013")
+GROUP BY Identifier, Frequency, Race
+
+```
+
+```{r}
+plot2 |>
+  ggplot(aes(x = Frequency, y = average_absorb)) +
+  geom_line() +
+  facet_wrap(~Race)
+```
