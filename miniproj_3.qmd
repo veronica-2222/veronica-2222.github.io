@@ -22,18 +22,21 @@ library(stringr)
 
 [The link to the original data is here](https://openintrostat.github.io/openintro/reference/dream.html)
 
-For this project, I used the 'Dream' data set from the openintro package. The data set came from SurveyUSA, News Poll and was collected on January 27-29, 2012. The poll surveyed the views of 910 people on the DREAM Act (a legislative proposed to give undocumented immigrants temporary residency so that they could work in the US). Those surveyed were categorized into three ideologies: Liberal, Moderate, and Conservative. Their responses were either No, Not Sure, or Yes.
+For this project, I used the 'Dream' data set from the openintro package. The data set came from SurveyUSA, News Poll and was collected on January 27-29, 2012. The poll surveyed the views of 910 people on the DREAM Act (a legislative proposed to give undocumented immigrants temporary residency in the US). Those surveyed were categorized into three ideologies: Liberal, Moderate, and Conservative. Their responses were either No, Not Sure, or Yes.
 
-### About the Simulation
-
+## About the Simulation
+```{r}
+library(openintro)
+library(tidyverse)
+library(stringr)
+```
 From the observed data of the data set, I noticed that the proportion of Liberals in support of the Dream Act (0.65) is greater than the proportion of Conservatives (0.5) and the proportion of Moderates (0.48). So, I set to test if there is truly a relationship between ideology and whether they are in support of the DREAM Act by comparing null plots and the observed plot.
 
 Under the null, the proportions between ideologies in support of the DREAM Act are equal . So, when we compare the null plots and observed plot, we are checking to see if our observed plot differs from the null plots. If we can identify the observed plot from the null plots, then this gives us evidence to reject the null, and believe that there is a relationship between ideology and their support of the DREAM Act.
 
-### Simulation
+## Simulation
 
 The data set was edited so that the rows of the ideology column only included the first letter of each of the ideologies for simplicity. They were also releveled so that Liberal was on the left, Moderate was in the middle, and Conservative was on the right.
-
 ```{r}
 dream <- dream |>
   mutate(ideology = as.character(ideology)) |>
@@ -60,13 +63,12 @@ obs_dream|>
 
 ```
 
-Then I created a function that conducts a permutation test by reshuffling the ideologies, but keeping the stance the same for each row.
+Then I created a function that conducts a randomization test by reshuffling the ideologies, but keeping the stance the same for each row.
 
 ```{r}
-permute <- function(rep){
+shuffle <- function(rep){
   dream |>
-    mutate(ideology = sample(c("L", "M", "C"), size = 910, replace = TRUE)) |>
-    mutate(ideology = fct_relevel(ideology, c("L", "M", "C"))) |>
+    mutate(ideology = sample(ideology, replace = FALSE)) |>
     mutate(repeated = rep)
 }
 ```
@@ -76,10 +78,10 @@ Here I mapped out 19 data frames (leaving out 18 because that's reserved for the
 ```{r}
 #under the null
 set.seed(47)
-null_dream_one <- map((1:17), permute)|>
+null_dream_one <- map((1:17), shuffle)|>
     list_rbind() 
 
-null_dream_two <- map((19:20), permute) |>
+null_dream_two <- map((19:20), shuffle) |>
   list_rbind() 
 
 ```
@@ -99,4 +101,4 @@ As we can see from the figure above, most of the shading of blue (which is what 
 
 ### Summary of Simulation
 
-I began this study by observing the data set and noticing that there is a greater proportion of Liberals who are in support of the DREAM Act. I tested this hypothesis by shuffling the order of the ideologies, via my `permute` function, to see if it was common to get the order of ideologies of the original data set. To compare the observation from the 19 reshuffles, I plotted their bar graphs and checked to see if the observed bar graph was identifiable among the bar graphs of the permuted data frames, and it was. So, we have reason to believe that there is a greater proportion of Liberals in support of the DREAM Act when compared to Moderates and Conservatives.
+I began this study by observing the data set and noticing that there is a greater proportion of Liberals who are in support of the DREAM Act. I tested this hypothesis by shuffling the order of the ideologies, via my `shuffle` function, to see if it was common to get the order of ideologies of the original data set. To compare the observation from the 19 reshuffles, I plotted their bar graphs and checked to see if the observed bar graph was identifiable among the bar graphs of the permuted data frames, and it was. So, we have reason to believe that there is a greater proportion of Liberals in support of the DREAM Act when compared to Moderates and Conservatives.
