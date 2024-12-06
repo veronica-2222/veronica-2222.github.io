@@ -13,6 +13,8 @@ website:
       - href: about.qmd
         text: About
       - sidebar:dataviz
+      - href: finalpresentation.qmd
+        text: Presentation
       
   sidebar:
     - id: dataviz
