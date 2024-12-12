@@ -59,6 +59,8 @@ The graph displays the difference between the year a show or movie was released 
 Focusing on TV shows, I wondered if the proportion of genres differed across different TVs, like TV-13 vs. TV-MA.
 
 ```{r}
+#| fig.alt: "The bar graph is titled Number of Specific TV Ratings, with the subheading: categorized by genres. The x-axis is TV- and each bar graph is broken down by 13, 14, G, PG, Ma. The proportions are categorized by color relating to a specific color; pink is for action, green for comedies, blue for crime, and purple for dramas."
+
 netflix|>
   select(rating, listed_in) |>
   mutate(tv_rating = str_extract(rating, "(?<=-).+(?=$)")) |> #only takes in the type of tv-rating, removes "TV-"
