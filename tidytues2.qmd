@@ -12,36 +12,48 @@ message: false
 warning: false
 ---
 
-[The link to the original data is here](https://github.com/rfordatascience/tidytuesday/tree/master/data/2022/2022-01-18)
+### About the Data
 
-```{r}
+[Chocolate Rating](https://github.com/rfordatascience/tidytuesday/tree/master/data/2022/2022-01-18)
+
+This TidyTuesday data came from Flavors of Cacao, which includes a database of for over 2,700 plain dark chocolates that have been rated. This data covers information such as company manufacturer, company location, review date, country of bean origin, bean or bar name, cocoa percent, ingredients, memorable characteristic, and ratings, as seen from the tibble below.
+
+```{r echo = FALSE}
 library(ggplot2)
 library("tidytuesdayR")
 library(dplyr)
+library(stringr)
 tuesdata <- tidytuesdayR::tt_load('2022-01-18')
 ```
 
 ```{r}
-chocolates <- tuesdata$chocolate |>
-  select(cocoa_percent, rating) |>
-  group_by(cocoa_percent) |>
-  summarize(avg_rating = mean(rating), na.rm = TRUE) |>
-  
-  filter(cocoa_percent >= "75%")
-
-chocolates
+#transferring TidyTuesday data to tidyverse
+chocolates <- tuesdata$chocolate
+head(chocolates)
 ```
 
-```{r}
+After further observation of the data, I thought it would be interesting to analyze how rating is affected by cocoa percent this variable is often what's most visible in most packaging.
 
+### Analysis
+
+```{r}
+#| fig.alt: "A scatter plot titled Chocolate Rating by Cocoa Percent. The x-axis contains the cocoa percent ranging from 75% to 99%. The y-axis contains the average chocolate rating."
+
+#to create a scatter plot
 chocolates |>
-  ggplot(aes(cocoa_percent, avg_rating)) +
+  select(cocoa_percent, rating) |>
+  group_by(cocoa_percent) |>
+  summarize(avg_rating = mean(rating), na.rm = TRUE) |> #took the average of the rating
+  filter(cocoa_percent >= "75%") |> #filtered cocoa percent to the ones greater than or equal to 75%
+   ggplot(aes(cocoa_percent, avg_rating)) +
   geom_point(color = "brown", alpha = 0.5, size = 3) +
   labs(
     x = "Cocoa Percent",
     y = "Average Chocolate Rating", 
     title = "Chocolate Rating by Cocoa Percent"
   ) +
-  theme_minimal()
-    
+  theme_light()
+
 ```
+
+The graph doesn't seem to show a strong correlation between cocoa percent (ranging between 75% - 99%) and average chocolate rating (ranging between 1-5). However, we can see that a cocoa percent of 78% received the highest average chocolate rating, while a cocoa percent of 91% received the lowest average chocolate rating. We can also observe how the rating stays at a pretty consistent range between 2.75 to 3 and above when the cocoa percent is between 75% and 88%, and only begins a huge drop in rating past 88%. So, a takeaway from the graph could be that the chocolate will be decent as long as its cocoa percent is between 75% to 88%.

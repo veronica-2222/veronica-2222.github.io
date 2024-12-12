@@ -160,8 +160,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="dropdown-item" href="./miniproj_3.html">
  <span class="dropdown-text">A Simulation Study</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="./miniproj_4.html">
+ <span class="dropdown-text">SQL</span></a>
+  </li>  
     </ul>
   </li>
+  <li class="nav-item">
+    <a class="nav-link" href="./finalpresentation.html"> 
+<span class="menu-text">Presentation</span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
           <div class="quarto-navbar-tools">
@@ -216,13 +224,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">A Simulation Study</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./miniproj_4.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">SQL</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#about-the-data" id="toc-about-the-data" class="nav-link active" data-scroll-target="#about-the-data">About the Data</a></li>
+  <li><a href="#analysis" id="toc-analysis" class="nav-link" data-scroll-target="#analysis">Analysis</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -263,41 +284,104 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p><a href="https://github.com/rfordatascience/tidytuesday/blob/master/data/2024/2024-05-21/readme.md">The link to the original data is here</a></p>
+<section id="about-the-data" class="level3">
+<h3 class="anchored" data-anchor-id="about-the-data">About the Data</h3>
+<p><a href="https://github.com/rfordatascience/tidytuesday/blob/master/data/2024/2024-05-21/readme.md">Carbon Majors Emissions Data</a></p>
+<p>This TidyTuesday data came from Carbon Majors, a database with historical production data of 122 of the world’s largest producers of oil, gas, and coal. The emissions data has data dating back to 1854 and “over 1.42 trillion tonnes of CO2e covering 72% of global fossil fuel and cement emissions”</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"tidytuesdayR"</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>tuesdata <span class="ot">&lt;-</span> tidytuesdayR<span class="sc">::</span><span class="fu">tt_load</span>(<span class="st">'2024-05-21'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#transferring TidyTuesday data to tidyverse</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>emit_co2 <span class="ot">&lt;-</span> tuesdata<span class="sc">$</span>emissions</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(emit_co2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 7
+   year parent_entity     parent_type commodity production_value production_unit
+  &lt;dbl&gt; &lt;chr&gt;             &lt;chr&gt;       &lt;chr&gt;                &lt;dbl&gt; &lt;chr&gt;          
+1  1962 Abu Dhabi Nation… State-owne… Oil &amp; NGL            0.913 Million bbl/yr 
+2  1962 Abu Dhabi Nation… State-owne… Natural …            1.84  Bcf/yr         
+3  1963 Abu Dhabi Nation… State-owne… Oil &amp; NGL            1.83  Million bbl/yr 
+4  1963 Abu Dhabi Nation… State-owne… Natural …            4.42  Bcf/yr         
+5  1964 Abu Dhabi Nation… State-owne… Oil &amp; NGL            7.3   Million bbl/yr 
+6  1964 Abu Dhabi Nation… State-owne… Natural …           17.3   Bcf/yr         
+# ℹ 1 more variable: total_emissions_MtCO2e &lt;dbl&gt;</code></pre>
 </div>
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>emit_co2 <span class="sc">|&gt;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(commodity) <span class="sc">|&gt;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">count =</span> <span class="fu">n</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 2
+  commodity          count
+  &lt;chr&gt;              &lt;int&gt;
+1 Anthracite Coal      368
+2 Bituminous Coal     1370
+3 Cement               263
+4 Lignite Coal        1008
+5 Metallurgical Coal  1073
+6 Natural Gas         3452</code></pre>
+</div>
+</div>
+<p>According to the tibble, we can see that the data is divided into 7 variables: year, parent entity, parent type, commodity, production value, production unit, and total emissions of CO2. I was interested in seeing the different commodities, and after grouping by that variable, I saw that they used 9 different commodities (shown above). After observing the table, I began to wonder if throughout the years, there’s a shift in the type of commodity that’s contributing to a greater total emissions of CO2.</p>
+</section>
+<section id="analysis" class="level3">
+<h3 class="anchored" data-anchor-id="analysis">Analysis</h3>
+<p>For my plot, I tested this curiosity by first creating a scatter plot with the year as my x-axis and total emissions as my y-axis. I then wrapped it by commodity to observe the total emissions per year divided by commodity.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>emit_co2 <span class="ot">&lt;-</span> tuesdata<span class="sc">$</span>emissions</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(emit_co2, <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> total_emissions_MtCO2e, <span class="at">color =</span> commodity)) <span class="sc">+</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> commodity) <span class="sc">+</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Year"</span>,</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Total CO2 Emissions"</span>,</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Total Emissions per Commodity per Year"</span>,</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"Commodity"</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span> ()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#to create a scatter plot</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(emit_co2, <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> total_emissions_MtCO2e, <span class="at">color =</span> commodity)) <span class="sc">+</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Year"</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Total CO2 Emissions"</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Total Emissions per Commodity per Year"</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"Commodity"</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span> () <span class="sc">+</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>commodity)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="tidytues1_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="tidytues1_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" alt="A scatter plot titled Total Emissions per Commodity per Year. The x-axis is the year and the y-axis is the total CO2 emissions. There are 9 plots for each of the 9 commodities used in the data set." width="672"></p>
 </figure>
 </div>
 </div>
 </div>
+<p>From the graph, we can see that most of the commodities’ total CO2 emissions stayed pretty constant. However, Oil &amp; NGL and Natural Gas peaked around 1970s-1980s. And then by the 2000s, anthracite coal, cement, and metallurgical coal started to reach their peak. Bituminous coal and sub-bituminous coal are just starting to reach theirs past 2000s.</p>
+<p>To further compare these commodities, I also plotted them in a single plot and separated each commodity by color.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#to create a scatter plot</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(emit_co2, <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> total_emissions_MtCO2e, <span class="at">color =</span> commodity)) <span class="sc">+</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Year"</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Total CO2 Emissions"</span>,</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Total Emissions per Year"</span>,</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"Commodity"</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span> ()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="tidytues1_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" alt="A scatter plot titled Total Emissions per per Year. The x-axis is the year and the y-axis is the total CO2 emissions. Each commodity is categorized by a color." width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>When all the commodities are combined, it appears that most of the commodities’ total CO2 emissions stayed pretty constant. However, by the 1970s-1980s, we can see that Oil &amp; NGL (blue) and Natural Gas (violet), along with Bituminous Coal (orange), begin to rise above the other other commodities. By the 2000s, Bituminous Coal keeps increasing exponentially, while other commodities like Lignite Coal, Anthracite coal, and Sub-Bituminous coal are just starting to increase, but not as much as Bituminous coal. The exponential rise of total emissions being contributed by bituminous coal could be explained by the fact that bituminous coal is used for electricity, and throughout the years, the need for electricity also exponentially increased.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

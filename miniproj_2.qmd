@@ -18,13 +18,24 @@ library(ggplot2)
 library(stringr)
 ```
 
-[The link to Netflix data is here](https://www.kaggle.com/datasets/shivamb/netflix-shows)
+### About the Data
+
+[Netflix Movies and TV Shows](https://www.kaggle.com/datasets/shivamb/netflix-shows)
 
 ```{r}
 netflix <- read.csv("../veronica-2222.github.io/netflix_titles.csv")
+
+netflix |>
+  group_by(director) |>
+  summarize(count = n()) |>
+  arrange(desc(count))
 ```
 
+This data came from kaggle.com and was uploaded by Shivam Bansal. It is regularly updated, but its last updaye was 3 years ago. The data covers 8,807 Netflix titles, and contains information like their type (TV show or movie), title, director, cast, country, date added on Netflix, actual release year, rating, and duration (as seen from the tibble above).
+
 ### General Netflix Data
+
+After observing the data set, I thought it would be interesting to see if there
 
 ```{r}
 netflix |>

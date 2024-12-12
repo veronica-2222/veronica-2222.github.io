@@ -12,9 +12,13 @@ message: false
 warning: false
 ---
 
-[The link to the original data is here](https://github.com/rfordatascience/tidytuesday/blob/master/data/2024/2024-05-21/readme.md)
+### About the Data
 
-```{r}
+[Carbon Majors Emissions Data](https://github.com/rfordatascience/tidytuesday/blob/master/data/2024/2024-05-21/readme.md)
+
+This TidyTuesday data came from Carbon Majors, a database with historical production data of 122 of the world's largest producers of oil, gas, and coal. The emissions data has data dating back to 1854 and "over 1.42 trillion tonnes of CO2e covering 72% of global fossil fuel and cement emissions"
+
+```{r echo = FALSE}
 library(ggplot2)
 library("tidytuesdayR")
 library(dplyr)
@@ -22,15 +26,55 @@ tuesdata <- tidytuesdayR::tt_load('2024-05-21')
 ```
 
 ```{r}
+#transferring TidyTuesday data to tidyverse
 emit_co2 <- tuesdata$emissions
+head(emit_co2)
+
+emit_co2 |>
+  group_by(commodity) |>
+  summarize(count = n()) |>
+  head()
+```
+
+According to the tibble, we can see that the data is divided into 7 variables: year, parent entity, parent type, commodity, production value, production unit, and total emissions of CO2. I was interested in seeing the different commodities, and after grouping by that variable, I saw that they used 9 different commodities (shown above). After observing the table, I began to wonder if throughout the years, there's a shift in the type of commodity that's contributing to a greater total emissions of CO2.
+
+### Analysis
+
+For my plot, I tested this curiosity by first creating a scatter plot with the year as my x-axis and total emissions as my y-axis. I then wrapped it by commodity to observe the total emissions per year divided by commodity.
+
+```{r}
+#| fig.alt: "A scatter plot titled Total Emissions per Commodity per Year. The x-axis is the year and the y-axis is the total CO2 emissions. There are 9 plots for each of the 9 commodities used in the data set."
+
+#to create a scatter plot
 ggplot(emit_co2, aes(x = year, y = total_emissions_MtCO2e, color = commodity)) +
-  geom_point(alpha = 0.2) +
-  facet_wrap(~ commodity) +
+  geom_point(alpha = 0.5) +
   labs(
     x = "Year",
     y = "Total CO2 Emissions",
     title = "Total Emissions per Commodity per Year",
     color = "Commodity"
   ) +
+  theme_minimal () +
+  facet_wrap(~commodity)
+```
+
+From the graph, we can see that most of the commodities' total CO2 emissions stayed pretty constant. However, Oil & NGL and Natural Gas peaked around 1970s-1980s. And then by the 2000s, anthracite coal, cement, and metallurgical coal started to reach their peak. Bituminous coal and sub-bituminous coal are just starting to reach theirs past 2000s.
+
+To further compare these commodities, I also plotted them in a single plot and separated each commodity by color.
+
+```{r}
+#| fig.alt: "A scatter plot titled Total Emissions per per Year. The x-axis is the year and the y-axis is the total CO2 emissions. Each commodity is categorized by a color."
+
+#to create a scatter plot
+ggplot(emit_co2, aes(x = year, y = total_emissions_MtCO2e, color = commodity)) +
+  geom_point(alpha = 0.5) +
+  labs(
+    x = "Year",
+    y = "Total CO2 Emissions",
+    title = "Total Emissions per Year",
+    color = "Commodity"
+  ) +
   theme_minimal ()
 ```
+
+When all the commodities are combined, it appears that most of the commodities' total CO2 emissions stayed pretty constant. However, by the 1970s-1980s, we can see that Oil & NGL (blue) and Natural Gas (violet), along with Bituminous Coal (orange), begin to rise above the other other commodities. By the 2000s, Bituminous Coal keeps increasing exponentially, while other commodities like Lignite Coal, Anthracite coal, and Sub-Bituminous coal are just starting to increase, but not as much as Bituminous coal. The exponential rise of total emissions being contributed by bituminous coal could be explained by the fact that bituminous coal is used for electricity, and throughout the years, the need for electricity also exponentially increased.

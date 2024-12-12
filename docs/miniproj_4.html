@@ -166,6 +166,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
     </ul>
   </li>
+  <li class="nav-item">
+    <a class="nav-link" href="./finalpresentation.html"> 
+<span class="menu-text">Presentation</span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
           <div class="quarto-navbar-tools">
@@ -239,6 +243,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#about-the-database" id="toc-about-the-database" class="nav-link active" data-scroll-target="#about-the-database">About the Database</a></li>
   <li><a href="#duplicating-figures" id="toc-duplicating-figures" class="nav-link" data-scroll-target="#duplicating-figures">Duplicating Figures</a></li>
   <li><a href="#analysis-of-individual-study" id="toc-analysis-of-individual-study" class="nav-link" data-scroll-target="#analysis-of-individual-study">Analysis of Individual Study</a></li>
+  <li><a href="#sources" id="toc-sources" class="nav-link" data-scroll-target="#sources">Sources</a></li>
   </ul>
 </nav>
     </div>
@@ -312,7 +317,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="duplicating-figures" class="level3">
 <h3 class="anchored" data-anchor-id="duplicating-figures">Duplicating Figures</h3>
-<p>For this analysis, I duplicated figure 1 that’s in “An online wideband acoustic immittance (WAI) database and corresponding website” (Voss 2020). The figure shows a line graph of frequency versus mean absorption of the 12 studies found in WAI database as of July 1, 2019. Its legend contains the authors, year, number of individual ears, and equipment used.</p>
+<p>For this analysis, I duplicated figure 1 that’s in “Resource Review” (Voss 2020). The figure shows a line graph of frequency versus mean absorption of the 12 studies found in WAI database as of July 1, 2019. Its legend contains the authors, year, number of individual ears, and equipment used.</p>
 <div class="cell" data-output.var="figure">
 <details class="code-fold">
 <summary>Show the code</summary>
@@ -346,73 +351,83 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>strings <span class="sc">|&gt;</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Identifier) <span class="sc">|&gt;</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Frequency, <span class="at">y =</span> avg_absorb, <span class="at">color =</span> key_info)) <span class="sc">+</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="dv">0</span>, <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">200</span>, <span class="dv">8000</span>) <span class="sc">+</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Frequency (Hz)"</span>,</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Mean Abosrbance"</span>,</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Mean absorbance from each publication in WAI database"</span>,</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">""</span>) <span class="sc">+</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_log10</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#creates the line graph</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>strings <span class="sc">|&gt;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Identifier) <span class="sc">|&gt;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Frequency, <span class="at">y =</span> avg_absorb, <span class="at">color =</span> key_info)) <span class="sc">+</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="dv">0</span>, <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">200</span>, <span class="dv">8000</span>) <span class="sc">+</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Frequency (Hz)"</span>,</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Mean Abosrbance"</span>,</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Mean absorbance from each publication in WAI database"</span>,</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="fu">c</span>(<span class="fl">0.2</span>, <span class="fl">0.8</span>), <span class="co">#repositions the legend so that it is on the graph instead of to the side</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">8</span>),</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">0</span>),</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.background =</span> <span class="fu">element_rect</span>(</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">size=</span><span class="fl">0.25</span>, <span class="at">linetype=</span><span class="st">"solid"</span>, </span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">colour =</span><span class="st">"black"</span>),</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.key.size =</span> <span class="fu">unit</span>(<span class="dv">3</span>, <span class="st">'mm'</span>),</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.key.length=</span> <span class="fu">unit</span>(<span class="dv">10</span>, <span class="st">'cm'</span>),</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.key.spacing.y =</span> <span class="fu">unit</span>(<span class="fl">0.5</span>, <span class="st">"pt"</span>)) <span class="sc">+</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_log10</span>(<span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">200</span>, <span class="dv">400</span>, <span class="dv">600</span>, <span class="dv">800</span>, <span class="dv">1000</span>, <span class="dv">2000</span>, <span class="dv">4000</span>, <span class="dv">6000</span>, <span class="dv">8000</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="miniproj_4_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="miniproj_4_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" alt="A line graph titled Mean absorbance from each publication in WAI database. The x-axis is the frequency measured in hertz and ranging from 200 to 8000. The y-axis is the mean absorbance. There are 12 lines each colored by a specific publication. The legend is placed on the top left of the graph." width="672"></p>
 </figure>
 </div>
 </div>
 </div>
-<p><a href="https://www.ncbi.nlm.nih.gov/core/lw/2.0/html/tileshop_pmc/tileshop_pmc_inline.html?title=Click%20on%20image%20to%20zoom&amp;p=PMC3&amp;id=7093226_nihms-1535071-f0001.jpg">Link to the figure I’m duplicating</a></p>
+<p><a href="https://journals.lww.com/ear-hearing/citation/2019/11000/resource_review.21.aspx">Link to the figure I’m duplicating</a></p>
 <p>To duplicate the figure using SQL, I first had to pull ‘Measurements’ since the table had the absorbance, frequency, and instrument. Through Measurements, I created a table with columns that include the frequency and average absorbance since those are the two main variables being compared in the graph. Because I needed the author names and years of each study, I needed to pull ‘PI_Info’. Since all the information I needed are still split into two tables, I used <code>JOIN</code>, and joined ‘Measurements’ and ‘PI_Info’ through ‘Identifier’ (since they both had that as a column) to combine the columns I needed and create a table with all the information needed. Once I had the table, I used ggplot to produce a figure that’s similar to Figure 1 from Voss 2020. If we compare them, we can see that the graphs are very similar.</p>
 </section>
 <section id="analysis-of-individual-study" class="level3">
 <h3 class="anchored" data-anchor-id="analysis-of-individual-study">Analysis of Individual Study</h3>
 <p>I chose one of the 12 studies that included different races, sex, and ethnicity. A limitation present in this database is that many of the studies don’t have participants of different races, sex, or ethnicity. However, after taking the time to look at each study, I found that the study (Shaver 2013) included different races, sex, and ethnicity. So, this analysis will compare the frequency versus mean absorption across different races from the study (Shaver 2013).</p>
-<div class="cell" data-output.var="figure2">
-<details class="code-fold">
-<summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> Frequency, <span class="kw">Identifier</span>, LOG10(Frequency) <span class="kw">AS</span> scaled_freq, <span class="fu">AVG</span>(Absorbance) <span class="kw">AS</span> average_absorb</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> Measurements</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> <span class="kw">Identifier</span> <span class="kw">IN</span> (<span class="ot">"Shaver_2013"</span>)</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="kw">GROUP</span> <span class="kw">BY</span> <span class="kw">Identifier</span>, Frequency</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
 <div class="cell" data-output.var="plot2">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> s.<span class="kw">Identifier</span>, s.Race, <span class="fu">AVG</span>(Absorbance) <span class="kw">AS</span> average_absorb, m.Frequency, LOG10(Frequency) <span class="kw">AS</span> scaled_freq</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> Subjects <span class="kw">AS</span> s</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="kw">LEFT</span> <span class="kw">JOIN</span> Measurements <span class="kw">AS</span> m <span class="kw">ON</span> m.<span class="kw">Identifier</span> <span class="op">=</span> s.<span class="kw">Identifier</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> s.<span class="kw">Identifier</span> <span class="kw">IN</span> (<span class="ot">"Shaver_2013"</span>)</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="kw">GROUP</span> <span class="kw">BY</span> <span class="kw">Identifier</span>, Frequency, Race</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode sql code-with-copy"><code class="sourceCode sql"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">SELECT</span> s.SubjectNumber,<span class="fu">AVG</span>(Absorbance) <span class="kw">AS</span> average_absorb, m.Frequency, LOG10(Frequency) <span class="kw">AS</span> scaled_freq, s.Sex, s.Race</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">FROM</span> Subjects <span class="kw">AS</span> s</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="kw">LEFT</span> <span class="kw">JOIN</span> Measurements <span class="kw">AS</span> m <span class="kw">ON</span> m.SubjectNumber <span class="op">=</span> s.SubjectNumber</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="kw">WHERE</span> s.<span class="kw">Identifier</span> <span class="kw">IN</span> (<span class="ot">"Shaver_2013"</span>) <span class="kw">AND</span> m.Frequency <span class="op">&gt;</span> <span class="dv">100</span> <span class="kw">AND</span> m.Frequency <span class="op">&lt;</span> <span class="dv">1000</span> <span class="kw">AND</span> s.Race <span class="kw">IN</span> (<span class="ot">"Asian"</span>, <span class="ot">"Black"</span>, <span class="ot">"Caucasian"</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="kw">GROUP</span> <span class="kw">BY</span> SubjectNumber, Frequency, Race, Sex</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="kw">HAVING</span> average_absorb <span class="op">&gt;</span> <span class="dv">0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>plot2 <span class="sc">|&gt;</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Frequency, <span class="at">y =</span> average_absorb)) <span class="sc">+</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Race) <span class="sc">+</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Frequency Versus Mean Absorption Across Different Races"</span>,</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Frequency (Hz)"</span>,</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Mean Absorption"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">#creates a line graph colored by Sex</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>plot2 <span class="sc">|&gt;</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Frequency, <span class="at">y =</span> average_absorb, <span class="at">color =</span> Sex)) <span class="sc">+</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Race) <span class="sc">+</span> <span class="co">#creates a graph for each race</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Frequency Versus Mean Absorption Across Different Sexes and Races"</span>,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Frequency (Hz)"</span>,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Mean Absorption"</span>) <span class="sc">+</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="miniproj_4_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="miniproj_4_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" alt="A line graph titled Frequency versus Mean Absorption Across Different Sexes and Races. The x-axis is the frequency measured in hertz and ranging from 100 to 1000. The y-axis is the mean abosrbance from 0 to 1. There are 2 lines, the blue one representing male and red representing female. There are three graphs in total separated by races (Asian, Black, and Caucasian)." width="672"></p>
 </figure>
 </div>
 </div>
 </div>
-<p>For this analysis, I used a similar process as the one I used to duplicate Figure 1 (Voss 2020). I used SQL to pull ‘Measurements’ because it has the data for frequency and absorption. Then I had to pull ‘Subjects’ because it has the data for different races, sex, and ethnicity. To combine the needed information from both tables, I joined Measurements and Subjects through ‘Identifier’ and created a new table with just the author (Shaver), frequency, average absorption, race, sex, and ethnicity. Using the new table and ggplot, I created line graphs based on the race.</p>
-<p>As seen from the plot above, all of the races included in the study have the same line. This might be because of how the study was conducted and how they counted the ears and measured the absorption. But if we simply focus on the different graphs, across the the different races, the average absorption seems to increase when frequency goes up to 3000 Hz but starts to decrease after that.</p>
+<p>For this analysis, I used a similar process as the one I used to duplicate Figure 1. I used SQL to pull ‘Measurements’ because it has the data for frequency and absorption. Then I had to pull ‘Subjects’ because it has the data for different races, sex, and ethnicity. To combine the needed information from both tables, I joined Measurements and Subjects through ‘SubjectNumber’ since the graph is supposed to analyze subjects of different race, sex, or ethnicity. I then filtered Identifier to only use Shaver 2013 because after observing the various studies, Shaver 2013 actually used different races and sex for their study. With all of that information, I created a new table with frequency, average, absorption, race and sex. Using the new table and ggplot, I created a line graph colored by sex to see how the two sexes compare. To clean up the graph, I also filtered the frequency to only take in 100 Hz to 1000 Hz.</p>
+<p>The graph above displays a trend across the different races. It seems as if when the frequency increases, the mean absorption somewhat increases as well as we see a positive curve among the three graphs. The ‘noise’ of the blue and red lines, however, differ among the races. There seems to be more Caucasian males in Shaver’s study as the blue line for that graph is more solid compared to the other two. Though there are obviously limitations from this study, as there was also an ‘unknown’ in the race column, which was filtered out, one takeaway from this visual could be that sex doesn’t affect the relationship between frequency and absorption as the curves made from each colored line display a similar increasing pattern.</p>
+</section>
+<section id="sources" class="level2">
+<h2 class="anchored" data-anchor-id="sources">Sources</h2>
+<ol type="1">
+<li>Shaver MD, Sun XM. Wideband energy reflectance measurements: effects of negative middle ear pressure and application of a pressure compensation procedure. J Acoust Soc Am. 2013 Jul;134(1):332-41. doi: 10.1121/1.4807509. PMID: 23862811.</li>
+<li>Voss, Susan E. Ph.D.&nbsp;Resource Review. Ear and Hearing 40(6):p 1481, November/December 2019. | DOI: 10.1097/AUD.0000000000000790</li>
+</ol>
 
 
 </section>

@@ -81,7 +81,7 @@ obs_dream|>
 
 ```
 
-## Null Distribution --> Null Plots
+## Null Distribution --\> Null Plots
 
 ```{r}
 shuffle <- function(rep){
@@ -118,5 +118,4 @@ rbind(obs_dream, null_dream_one, null_dream_two) |>
 
 ## Conclusion
 
-Because the observed plot is identifiable, we have evidence to reject the null and conclude that there is a difference among the proportion of those in support of the DREAM Act across the three political ideologies. Since the data came from a SurveyUSA poll, the results of this study describes Americans who identify with one of the three political ideologies used in the survey. So based on the study, we can conclude that Americans who identify as liberal are more likely to be in support of the DREAM Act than Americans who identify as moderate or conservative.
-
+Because the observed plot is identifiable, we have evidence to reject the null and conclude that there is a difference among the proportion of those in support of the DREAM Act across the three political ideologies. Since the data came from a SurveyUSA poll, the results of this study describes Americans who identify with one of the three political ideologies used in the survey. So based on the study, we can conclude that Americans who identify as liberal are more likely to be in support of the DREAM Act than Americans who identify as moderate or conservative. However, we also need to take into account that the data came from a survey conducted in 2012, which was 12 years ago. Which means that although the study lets us generalize the results to the American population, it is limited to Americans during the 2010s as immigration policies have changed since then, and people affiliated with the three ideologies might have changed their stance on the DREAM Act if they were to be asked today.

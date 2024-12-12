@@ -1,0 +1,42 @@
+---
+title: "Untitled"
+---
+```{r}
+library(shiny)
+library(tidyverse)
+library("tidytuesdayR")
+library(dplyr)
+tuesdata <- tidytuesdayR::tt_load('2022-01-18')
+chocolates <- tuesdata$chocolate
+
+ui <- fluidPage(
+  titlePanel("Average Rating Versus Cocoa Percent"),
+  
+  sidebarPanel(
+    selectInput("xvar", "Bean origin",
+                choices = c("Venezuela", "Peru", "Dominican Republic", "Ecuador", 
+                            "Madagascar", "Blend", "Nicaragua", "Bolivia", "Colombia", "Tanzania")
+                )
+  )
+  )
+mainPanel(
+  plotOutput("myplot")
+)
+
+server <- function(input, output) {
+  newchocolates <- reactive({
+    chocolates |>
+      filter(country_of_bean_origin %in% input$xvar)
+  })
+  
+  output$myplot <- renderPlot({
+    ggplot(data = newchocolates(), aes(x=rating)) +
+      geom_histogram()
+  }
+  )
+}
+#create Shiny app
+shinyApp(ui, server)
+
+```
+

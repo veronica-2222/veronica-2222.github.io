@@ -40,7 +40,7 @@ Subjects <- tbl(con_wai, "Subjects")
 
 ### Duplicating Figures
 
-For this analysis, I duplicated figure 1 that's in "An online wideband acoustic immittance (WAI) database and corresponding website" (Voss 2020). The figure shows a line graph of frequency versus mean absorption of the 12 studies found in WAI database as of July 1, 2019. Its legend contains the authors, year, number of individual ears, and equipment used.
+For this analysis, I duplicated figure 1 that's in "Resource Review" (Voss 2020). The figure shows a line graph of frequency versus mean absorption of the 12 studies found in WAI database as of July 1, 2019. Its legend contains the authors, year, number of individual ears, and equipment used.
 
 ```{sql}
 #| connection: con_wai
@@ -49,7 +49,6 @@ SELECT Frequency, Identifier, LOG10(Frequency) AS scaled_freq, AVG(Absorbance) A
 FROM Measurements
 WHERE Identifier IN ("Abur_2014", "Feeney_2017", "Groon_2015", "Lewis_2015", "Liu_2008", "Rosowski_2012", "Shahnaz_2006", "Shaver_2013", "Sun_2016", "Voss_1994", "Voss_2010", "Werner_2010") AND Frequency > 200 AND Frequency < 8000
 GROUP BY Identifier, Frequency
-
 ```
 
 ```{sql}
@@ -74,6 +73,9 @@ HAVING avg_absorb > 0;
 ```
 
 ```{r}
+#| fig.alt: "A line graph titled Mean absorbance from each publication in WAI database. The x-axis is the frequency measured in hertz and ranging from 200 to 8000. The y-axis is the mean absorbance. There are 12 lines each colored by a specific publication. The legend is placed on the top left of the graph."
+
+#creates the line graph
 strings |>
   group_by(Identifier) |>
   ggplot(aes(x = Frequency, y = avg_absorb, color = key_info)) +
@@ -84,11 +86,19 @@ strings |>
        y = "Mean Abosrbance",
        title = "Mean absorbance from each publication in WAI database",
        color = "") +
-  theme_bw() +
-  scale_x_log10() 
+    theme(legend.position = c(0.2, 0.8), #repositions the legend so that it is on the graph instead of to the side
+        legend.text = element_text(size = 8),
+        legend.title = element_text(size = 0),
+        legend.background = element_rect(
+                                  size=0.25, linetype="solid", 
+                                  colour ="black"),
+        legend.key.size = unit(3, 'mm'),
+        legend.key.length= unit(10, 'cm'),
+        legend.key.spacing.y = unit(0.5, "pt")) +
+  scale_x_log10(breaks = c(200, 400, 600, 800, 1000, 2000, 4000, 6000, 8000)) 
 ```
 
-[Link to the figure I'm duplicating](https://www.ncbi.nlm.nih.gov/core/lw/2.0/html/tileshop_pmc/tileshop_pmc_inline.html?title=Click%20on%20image%20to%20zoom&p=PMC3&id=7093226_nihms-1535071-f0001.jpg)
+[Link to the figure I'm duplicating](https://journals.lww.com/ear-hearing/citation/2019/11000/resource_review.21.aspx)
 
 To duplicate the figure using SQL, I first had to pull 'Measurements' since the table had the absorbance, frequency, and instrument. Through Measurements, I created a table with columns that include the frequency and average absorbance since those are the two main variables being compared in the graph. Because I needed the author names and years of each study, I needed to pull 'PI_Info'. Since all the information I needed are still split into two tables, I used `JOIN`, and joined 'Measurements' and 'PI_Info' through 'Identifier' (since they both had that as a column) to combine the columns I needed and create a table with all the information needed. Once I had the table, I used ggplot to produce a figure that's similar to Figure 1 from Voss 2020. If we compare them, we can see that the graphs are very similar.
 
@@ -98,35 +108,35 @@ I chose one of the 12 studies that included different races, sex, and ethnicity.
 
 ```{sql}
 #| connection: con_wai
-#| output.var: "figure2"
-SELECT Frequency, Identifier, LOG10(Frequency) AS scaled_freq, AVG(Absorbance) AS average_absorb
-FROM Measurements
-WHERE Identifier IN ("Shaver_2013")
-GROUP BY Identifier, Frequency
-
-```
-
-```{sql}
-#| connection: con_wai
 #| output.var: "plot2"
-SELECT s.Identifier, s.Race, AVG(Absorbance) AS average_absorb, m.Frequency, LOG10(Frequency) AS scaled_freq
+SELECT s.SubjectNumber,AVG(Absorbance) AS average_absorb, m.Frequency, LOG10(Frequency) AS scaled_freq, s.Sex, s.Race
 FROM Subjects AS s
-LEFT JOIN Measurements AS m ON m.Identifier = s.Identifier
-WHERE s.Identifier IN ("Shaver_2013")
-GROUP BY Identifier, Frequency, Race
+LEFT JOIN Measurements AS m ON m.SubjectNumber = s.SubjectNumber
+WHERE s.Identifier IN ("Shaver_2013") AND m.Frequency > 100 AND m.Frequency < 1000 AND s.Race IN ("Asian", "Black", "Caucasian")
+GROUP BY SubjectNumber, Frequency, Race, Sex
+HAVING average_absorb > 0
 
 ```
 
 ```{r}
+#| fig.alt: "A line graph titled Frequency versus Mean Absorption Across Different Sexes and Races. The x-axis is the frequency measured in hertz and ranging from 100 to 1000. The y-axis is the mean abosrbance from 0 to 1. There are 2 lines, the blue one representing male and red representing female. There are three graphs in total separated by races (Asian, Black, and Caucasian)."
+
+#creates a line graph colored by Sex
 plot2 |>
-  ggplot(aes(x = Frequency, y = average_absorb)) +
+  ggplot(aes(x = Frequency, y = average_absorb, color = Sex)) +
+  facet_wrap(~Race) + #creates a graph for each race
   geom_line() +
-  facet_wrap(~Race) +
-  labs(title = "Frequency Versus Mean Absorption Across Different Races",
+  labs(title = "Frequency Versus Mean Absorption Across Different Sexes and Races",
        x = "Frequency (Hz)",
-       y = "Mean Absorption")
+       y = "Mean Absorption") +
+  theme_bw() 
 ```
 
-For this analysis, I used a similar process as the one I used to duplicate Figure 1 (Voss 2020). I used SQL to pull 'Measurements' because it has the data for frequency and absorption. Then I had to pull 'Subjects' because it has the data for different races, sex, and ethnicity. To combine the needed information from both tables, I joined Measurements and Subjects through 'Identifier' and created a new table with just the author (Shaver), frequency, average absorption, race, sex, and ethnicity. Using the new table and ggplot, I created line graphs based on the race.
+For this analysis, I used a similar process as the one I used to duplicate Figure 1. I used SQL to pull 'Measurements' because it has the data for frequency and absorption. Then I had to pull 'Subjects' because it has the data for different races, sex, and ethnicity. To combine the needed information from both tables, I joined Measurements and Subjects through 'SubjectNumber' since the graph is supposed to analyze subjects of different race, sex, or ethnicity. I then filtered Identifier to only use Shaver 2013 because after observing the various studies, Shaver 2013 actually used different races and sex for their study. With all of that information, I created a new table with frequency, average, absorption, race and sex. Using the new table and ggplot, I created a line graph colored by sex to see how the two sexes compare. To clean up the graph, I also filtered the frequency to only take in 100 Hz to 1000 Hz.
 
-As seen from the plot above, all of the races included in the study have the same line. This might be because of how the study was conducted and how they counted the ears and measured the absorption. But if we simply focus on the different graphs, across the the different races, the average absorption seems to increase when frequency goes up to 3000 Hz but starts to decrease after that.
+The graph above displays a trend across the different races. It seems as if when the frequency increases, the mean absorption somewhat increases as well as we see a positive curve among the three graphs. The 'noise' of the blue and red lines, however, differ among the races. There seems to be more Caucasian males in Shaver's study as the blue line for that graph is more solid compared to the other two. Though there are obviously limitations from this study, as there was also an 'unknown' in the race column, which was filtered out, one takeaway from this visual could be that sex doesn't affect the relationship between frequency and absorption as the curves made from each colored line display a similar increasing pattern.
+
+## Sources
+
+1. Shaver MD, Sun XM. Wideband energy reflectance measurements: effects of negative middle ear pressure and application of a pressure compensation procedure. J Acoust Soc Am. 2013 Jul;134(1):332-41. doi: 10.1121/1.4807509. PMID: 23862811. 
+2. Voss, Susan E. Ph.D. Resource Review. Ear and Hearing 40(6):p 1481, November/December 2019. \| DOI: 10.1097/AUD.0000000000000790
