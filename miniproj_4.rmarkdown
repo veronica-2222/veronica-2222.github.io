@@ -12,11 +12,13 @@ message: false
 warning: false
 ---
 
+
 ### About the Database
 
 [The link to database](https://www.science.smith.edu/wai-database/)
 
 Using SQL, I queried the Wideband Acoustic Immittance (WAI) Database hosted by Smith College. WAI measurements are made to hopefully provide noninvasive auditory diagnostic tools for everyone. The WAI database hosts WAI measures on ears from all ages(infants, NICU infant, child, adults).
+
 
 ```{r}
 library(tidyverse)
@@ -38,9 +40,11 @@ Subjects <- tbl(con_wai, "Subjects")
 # collect(Measurements)
 ```
 
+
 ### Duplicating Figures
 
 For this analysis, I duplicated figure 1 that's in "Resource Review" (Voss 2020). The figure shows a line graph of frequency versus mean absorption of the 12 studies found in WAI database as of July 1, 2019. Its legend contains the authors, year, number of individual ears, and equipment used.
+
 
 ```{sql}
 #| connection: con_wai
@@ -98,6 +102,7 @@ strings |>
   scale_x_log10(breaks = c(200, 400, 600, 800, 1000, 2000, 4000, 6000, 8000)) 
 ```
 
+
 [Link to the figure I'm duplicating](https://pmc.ncbi.nlm.nih.gov/articles/PMC7093226/figure/F1/)
 
 To duplicate the figure using SQL, I first had to pull 'Measurements' since the table had the absorbance, frequency, and instrument. Through Measurements, I created a table with columns that include the frequency and average absorbance since those are the two main variables being compared in the graph. Because I needed the author names and years of each study, I needed to pull 'PI_Info'. Since all the information I needed are still split into two tables, I used `JOIN`, and joined 'Measurements' and 'PI_Info' through 'Identifier' (since they both had that as a column) to combine the columns I needed and create a table with all the information needed. Once I had the table, I used ggplot to produce a figure that's similar to Figure 1 from Voss 2020. If we compare them, we can see that the graphs are very similar.
@@ -105,6 +110,7 @@ To duplicate the figure using SQL, I first had to pull 'Measurements' since the 
 ### Analysis of Individual Study
 
 I chose one of the 12 studies that included different races, sex, and ethnicity. A limitation present in this database is that many of the studies don't have participants of different races, sex, or ethnicity. However, after taking the time to look at each study, I found that the study (Shaver 2013) included different races, sex, and ethnicity. So, this analysis will compare the frequency versus mean absorption across different races from the study (Shaver 2013).
+
 
 ```{sql}
 #| connection: con_wai
@@ -132,6 +138,7 @@ plot2 |>
   theme_bw() 
 ```
 
+
 For this analysis, I used a similar process as the one I used to duplicate Figure 1. I used SQL to pull 'Measurements' because it has the data for frequency and absorption. Then I had to pull 'Subjects' because it has the data for different races, sex, and ethnicity. To combine the needed information from both tables, I joined Measurements and Subjects through 'SubjectNumber' since the graph is supposed to analyze subjects of different race, sex, or ethnicity. I then filtered Identifier to only use Shaver 2013 because after observing the various studies, Shaver 2013 actually used different races and sex for their study. With all of that information, I created a new table with frequency, average, absorption, race and sex. Using the new table and ggplot, I created a line graph colored by sex to see how the two sexes compare. To clean up the graph, I also filtered the frequency to only take in 100 Hz to 1000 Hz.
 
 The graph above displays a trend across the different races. It seems as if when the frequency increases, the mean absorption somewhat increases as well as we see a positive curve among the three graphs. The 'noise' of the blue and red lines, however, differ among the races. There seems to be more Caucasian males in Shaver's study as the blue line for that graph is more solid compared to the other two. Though there are obviously limitations from this study, as there was also an 'unknown' in the race column, which was filtered out, one takeaway from this visual could be that sex doesn't affect the relationship between frequency and absorption as the curves made from each colored line display a similar increasing pattern.
@@ -140,3 +147,4 @@ The graph above displays a trend across the different races. It seems as if when
 
 1. Shaver MD, Sun XM. Wideband energy reflectance measurements: effects of negative middle ear pressure and application of a pressure compensation procedure. J Acoust Soc Am. 2013 Jul;134(1):332-41. doi: 10.1121/1.4807509. PMID: 23862811. 
 2. Voss, Susan E. Ph.D. Resource Review. Ear and Hearing 40(6):p 1481, November/December 2019. \| DOI: 10.1097/AUD.0000000000000790
+
