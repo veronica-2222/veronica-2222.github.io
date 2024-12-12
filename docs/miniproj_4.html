@@ -386,7 +386,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="analysis-of-individual-study" class="level3">
 <h3 class="anchored" data-anchor-id="analysis-of-individual-study">Analysis of Individual Study</h3>
-<p>I chose one of the 12 studies that included different races, sex, and ethnicity. A limitation present in this database is that many of the studies don’t have participants of different races, sex, or ethnicity. However, after taking the time to look at each study, I found that the study (Shaver 2013) included different races, sex, and ethnicity. So, this analysis will compare the frequency versus mean absorption across different races from the study (Shaver 2013).</p>
+<p>I chose one of the 12 studies that included different races, sex, and ethnicity. A limitation present in this database is that many of the studies don’t have participants of different races, sex, or ethnicity. However, after taking the time to look at each study, I found that the study (Shaver 2013) included different races, sex, and ethnicity. So, this analysis will compare the frequency versus mean absorption across different races and sex from the study (Shaver 2013).</p>
 <div class="cell" data-output.var="plot2">
 <details class="code-fold">
 <summary>Show the code</summary>
@@ -406,7 +406,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Frequency, <span class="at">y =</span> average_absorb, <span class="at">color =</span> Sex)) <span class="sc">+</span></span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Race) <span class="sc">+</span> <span class="co">#creates a graph for each race</span></span>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Frequency Versus Mean Absorption Across Different Sexes and Races"</span>,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Frequency Versus Mean Absorption Across Different Sex and Race"</span>,</span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Frequency (Hz)"</span>,</span>
 <span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Mean Absorption"</span>) <span class="sc">+</span></span>
 <span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -414,7 +414,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="miniproj_4_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" alt="A line graph titled Frequency versus Mean Absorption Across Different Sexes and Races. The x-axis is the frequency measured in hertz and ranging from 100 to 1000. The y-axis is the mean abosrbance from 0 to 1. There are 2 lines, the blue one representing male and red representing female. There are three graphs in total separated by races (Asian, Black, and Caucasian)." width="672"></p>
+<p><img src="miniproj_4_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" alt="A line graph titled Frequency versus Mean Absorption Across Different Sex and Race. The x-axis is the frequency measured in hertz and ranging from 100 to 1000. The y-axis is the mean abosrbance from 0 to 1. There are 2 lines, the blue one representing male and red representing female. There are three graphs in total separated by races (Asian, Black, and Caucasian)." width="672"></p>
 </figure>
 </div>
 </div>

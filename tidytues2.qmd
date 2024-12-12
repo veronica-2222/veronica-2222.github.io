@@ -32,7 +32,7 @@ chocolates <- tuesdata$chocolate
 head(chocolates)
 ```
 
-After further observation of the data, I thought it would be interesting to analyze how rating is affected by cocoa percent this variable is often what's most visible in most packaging.
+After further observation of the data, I thought it would be interesting to analyze how rating is affected by cocoa percent since this variable is often what's most visible in most packaging.
 
 ### Analysis
 

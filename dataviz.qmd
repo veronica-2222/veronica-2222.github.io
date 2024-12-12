@@ -8,6 +8,6 @@ title: "Data Viz"
 
 -   Text Analysis uses regular expressions to analyze data
 
--   A Simulation Study uses visual inference to conduct a hypotheses test.
+-   A Simulation Study uses visual inference to conduct a hypotheses test
 
 -   SQL contains my work using SQL to analyze a database and R to create visuals

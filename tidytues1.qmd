@@ -58,7 +58,7 @@ ggplot(emit_co2, aes(x = year, y = total_emissions_MtCO2e, color = commodity)) +
   facet_wrap(~commodity)
 ```
 
-From the graph, we can see that most of the commodities' total CO2 emissions stayed pretty constant. However, Oil & NGL and Natural Gas peaked around 1970s-1980s. And then by the 2000s, anthracite coal, cement, and metallurgical coal started to reach their peak. Bituminous coal and sub-bituminous coal are just starting to reach theirs past 2000s.
+From the graph, we can see that most of the commodities' total CO2 emissions stayed pretty constant. However, Oil & NGL and Natural Gas peaked around 1970s-1980s. And then by the 2000s, anthracite coal, cement, and metallurgical coal started to reach their peak. Bituminous coal and sub-bituminous coal are just starting to reach theirs past the 2000s.
 
 To further compare these commodities, I also plotted them in a single plot and separated each commodity by color.
 

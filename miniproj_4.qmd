@@ -104,7 +104,7 @@ To duplicate the figure using SQL, I first had to pull 'Measurements' since the 
 
 ### Analysis of Individual Study
 
-I chose one of the 12 studies that included different races, sex, and ethnicity. A limitation present in this database is that many of the studies don't have participants of different races, sex, or ethnicity. However, after taking the time to look at each study, I found that the study (Shaver 2013) included different races, sex, and ethnicity. So, this analysis will compare the frequency versus mean absorption across different races from the study (Shaver 2013).
+I chose one of the 12 studies that included different races, sex, and ethnicity. A limitation present in this database is that many of the studies don't have participants of different races, sex, or ethnicity. However, after taking the time to look at each study, I found that the study (Shaver 2013) included different races, sex, and ethnicity. So, this analysis will compare the frequency versus mean absorption across different races and sex from the study (Shaver 2013).
 
 ```{sql}
 #| connection: con_wai
@@ -119,14 +119,14 @@ HAVING average_absorb > 0
 ```
 
 ```{r}
-#| fig.alt: "A line graph titled Frequency versus Mean Absorption Across Different Sexes and Races. The x-axis is the frequency measured in hertz and ranging from 100 to 1000. The y-axis is the mean abosrbance from 0 to 1. There are 2 lines, the blue one representing male and red representing female. There are three graphs in total separated by races (Asian, Black, and Caucasian)."
+#| fig.alt: "A line graph titled Frequency versus Mean Absorption Across Different Sex and Race. The x-axis is the frequency measured in hertz and ranging from 100 to 1000. The y-axis is the mean abosrbance from 0 to 1. There are 2 lines, the blue one representing male and red representing female. There are three graphs in total separated by races (Asian, Black, and Caucasian)."
 
 #creates a line graph colored by Sex
 plot2 |>
   ggplot(aes(x = Frequency, y = average_absorb, color = Sex)) +
   facet_wrap(~Race) + #creates a graph for each race
   geom_line() +
-  labs(title = "Frequency Versus Mean Absorption Across Different Sexes and Races",
+  labs(title = "Frequency Versus Mean Absorption Across Different Sex and Race",
        x = "Frequency (Hz)",
        y = "Mean Absorption") +
   theme_bw() 

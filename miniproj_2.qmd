@@ -35,7 +35,7 @@ This data came from kaggle.com and was uploaded by Shivam Bansal. It is regularl
 
 ### General Netflix Data
 
-After observing the data set, I thought it would be interesting to see if there are possible insights that could be found when comparting the year a show or movie was released and the year they were added on Netflix.
+After observing the data set, I thought it would be interesting to see if there are possible insights that could be found when comparing the year a show or movie was released and the year they were added on Netflix.
 
 ```{r}
 #| fig.alt: "The scatter plot is titled: Analysis of Year Show/Movie was Released versus Year Added on Netflix. The x-axis is the year the titles are released and the y-axis is the year the title is added on Netflix."
@@ -148,7 +148,7 @@ Christmas <- netflix |>
 head(Christmas)
 ```
 
-The table classifies titles on Netflix with the word "Christmas" in its description with their title, type, first genre listed. The column 'Date' was cleaned up so that it would only include the first three letters of the months. By only including descriptions that have the word "Christmas" in it, I was able to retrieve a greater list of Christmas movies, as seen from the tibble above.
+The table classifies titles on Netflix with the word "Christmas" in its description with their title, type, first genre listed. The column 'Date' was cleaned up so that it would only include the first three letters of the months. By only including descriptions that have the word "Christmas" in it, I was able to retrieve a greater list of Christmas movies and shows, as seen from the tibble above.
 
 ```{r}
 #| fig.alt: "The bar graph is titled Count of Movies and TV shows based on month added. The x-axis is the month and the y-axis is the count of the titles. The bars are colored in dark green and the axes titles are colored in dark red."
@@ -167,7 +167,7 @@ Christmas |>
   )
 ```
 
-After not getting a list of Christmas movies after filtering titles added on December 24, I also created this bar graph from the table above it to see when such titles with "Christmas" in its description are added on Netflix. From the bar graph, it appears that majority of them are added on December and November, so maybe Netflix adds them throughout the month of December and not just Christmas Eve. I also found it quite surprising that after observing this graph, there's quite a couple of titles added in July and July, months I wouldn't expect to see Christmas movies added on Netflix. The titles added in June and July are seen in the table below.
+Since I didn't get a list of Christmas movies after filtering titles added on December 24, I also created this bar graph from the table above it to see when such titles with "Christmas" in its description are added on Netflix. From the bar graph, it appears that majority of them are added on December and November, so maybe Netflix adds them throughout the month of December and not just Christmas Eve. I also found it quite surprising that after observing this graph, there's a couple of titles added in July and July, months I wouldn't expect to see Christmas movies added on Netflix. The titles added in June and July are seen in the table below.
 
 ```{r}
 July <- Christmas|>
