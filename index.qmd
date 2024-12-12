@@ -10,9 +10,9 @@ about:
     - text: GitHub
       href: https://github.com/veronica-2222
     - text: Email
-      href: mailto:vjdt2023@mymail.pomona.edu
+      href: mailto:nyxdl722@gmail.com
     - text: WebRepo
       href: https://github.com/veronica-2222/veronica-2222.github.io
 ---
 
-Hi! I'm Veronica (she/her) and welcome to my website. I love math and am currently getting into data science. More about me and my site on the 'About' page.
+Hi! I'm Veronica De Leon(she/her) and welcome to my website. I love math and am currently getting into data science. More about me and my site on the 'About' page.

@@ -324,19 +324,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 # ℹ 4,519 more rows</code></pre>
 </div>
 </div>
-<p>This data came from kaggle.com and was uploaded by Shivam Bansal. It is regularly updated, but its last updaye was 3 years ago. The data covers 8,807 Netflix titles, and contains information like their type (TV show or movie), title, director, cast, country, date added on Netflix, actual release year, rating, and duration (as seen from the tibble above).</p>
+<p>This data came from kaggle.com and was uploaded by Shivam Bansal. It is regularly updated, but its last update was 3 years ago. The data covers 8,807 Netflix titles, and contains information like their type (TV show or movie), title, director, cast, country, date added on Netflix, actual release year, rating, and duration (as seen from the tibble above).</p>
 </section>
 <section id="general-netflix-data" class="level3">
 <h3 class="anchored" data-anchor-id="general-netflix-data">General Netflix Data</h3>
-<p>After observing the data set, I thought it would be interesting to see if there</p>
+<p>After observing the data set, I thought it would be interesting to see if there are possible insights that could be found when comparting the year a show or movie was released and the year they were added on Netflix.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>netflix <span class="sc">|&gt;</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(release_year, date_added) <span class="sc">|&gt;</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">added_year =</span> <span class="fu">str_extract</span>(date_added, <span class="st">"(?&lt;=, ).+(?=$)"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(release_year), <span class="sc">!</span><span class="fu">is.na</span>(added_year)) <span class="sc">|&gt;</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> release_year, <span class="at">y =</span> added_year)) <span class="sc">+</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">added_year =</span> <span class="fu">str_extract</span>(date_added, <span class="st">"(?&lt;=, ).+(?=$)"</span>)) <span class="sc">|&gt;</span> <span class="co">#this only takes in the years from the date added column</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(release_year), <span class="sc">!</span><span class="fu">is.na</span>(added_year)) <span class="sc">|&gt;</span> <span class="co">#removes the NAs</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> release_year, <span class="at">y =</span> added_year)) <span class="sc">+</span> <span class="co">#creates a scatterplot</span></span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
 <span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Year Show/Movie was Released"</span>,</span>
@@ -348,23 +348,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="miniproj_2_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="miniproj_2_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" alt="The scatter plot is titled: Analysis of Year Show/Movie was Released versus Year Added on Netflix. The x-axis is the year the titles are released and the y-axis is the year the title is added on Netflix." width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 <p>The graph displays the difference between the year a show or movie was released versus the year it was added on Netflix. The opaqueness of the points suggests when majority of the shows and movies were added on Netflix. In this case it seems as if majority of the shows and movies were added in 2016 and onward.</p>
+<p>Focusing on TV shows, I wondered if the proportion of genres differed across different TVs, like TV-13 vs.&nbsp;TV-MA.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>netflix<span class="sc">|&gt;</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(rating, listed_in) <span class="sc">|&gt;</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">tv_rating =</span> <span class="fu">str_extract</span>(rating, <span class="st">"(?&lt;=-).+(?=$)"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">first_listed =</span> <span class="fu">str_extract</span>(listed_in, <span class="st">"</span><span class="sc">\\</span><span class="st">w+"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(first_listed <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Action"</span>, <span class="st">"Crime"</span>, <span class="st">"Dramas"</span>, <span class="st">"Comedies"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(tv_rating <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"13"</span>, <span class="st">"14"</span>, <span class="st">"G"</span>, <span class="st">"PG"</span>, <span class="st">"MA"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span> (<span class="at">level_rating =</span> <span class="fu">fct_relevel</span>(tv_rating, <span class="fu">c</span>(<span class="st">"13"</span>, <span class="st">"14"</span>, <span class="st">"G"</span>, <span class="st">"PG"</span>, <span class="st">"MA"</span>))) <span class="sc">|&gt;</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> level_rating, <span class="at">fill =</span> first_listed)) <span class="sc">+</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">tv_rating =</span> <span class="fu">str_extract</span>(rating, <span class="st">"(?&lt;=-).+(?=$)"</span>)) <span class="sc">|&gt;</span> <span class="co">#only takes in the type of tv-rating, removes "TV-"</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">first_listed =</span> <span class="fu">str_extract</span>(listed_in, <span class="st">"</span><span class="sc">\\</span><span class="st">w+"</span>)) <span class="sc">|&gt;</span>  <span class="co">#creates a first_listed column with just the first genre they're listed in</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(first_listed <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Action"</span>, <span class="st">"Crime"</span>, <span class="st">"Dramas"</span>, <span class="st">"Comedies"</span>)) <span class="sc">|&gt;</span> <span class="co">#filters the first listed in genres</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(tv_rating <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"13"</span>, <span class="st">"14"</span>, <span class="st">"G"</span>, <span class="st">"PG"</span>, <span class="st">"MA"</span>)) <span class="sc">|&gt;</span> <span class="co">#filters in the tv ratings</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span> (<span class="at">level_rating =</span> <span class="fu">fct_relevel</span>(tv_rating, <span class="fu">c</span>(<span class="st">"13"</span>, <span class="st">"14"</span>, <span class="st">"G"</span>, <span class="st">"PG"</span>, <span class="st">"MA"</span>))) <span class="sc">|&gt;</span> <span class="co">#relevels the tv rating so that they're in this order</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> level_rating, <span class="at">fill =</span> first_listed)) <span class="sc">+</span> <span class="co">#creates a bar plot</span></span>
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"fill"</span>) <span class="sc">+</span></span>
 <span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
 <span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Number of Specific TV Ratings"</span>,</span>
@@ -390,67 +391,142 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="narrowed-netflix-data" class="level3">
 <h3 class="anchored" data-anchor-id="narrowed-netflix-data">Narrowed Netflix Data</h3>
-<section id="comedies-and-christmas-eve" class="level5">
-<h5 class="anchored" data-anchor-id="comedies-and-christmas-eve">Comedies and Christmas Eve</h5>
+<p>To further analyze TV shows, I wanted to see if TV shows listed under Comedies for those added in 2021 had an average amount of seasons.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>netflix <span class="sc">|&gt;</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(type, duration, title, date_added, listed_in) <span class="sc">|&gt;</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(type) <span class="sc">|&gt;</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(type, <span class="st">"TV Show"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(date_added , <span class="st">"2021"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(listed_in, <span class="st">"Comedies"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">season =</span> <span class="fu">str_sub</span>(duration, <span class="dv">1</span>, <span class="dv">1</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(type, <span class="st">"TV Show"</span>)) <span class="sc">|&gt;</span> <span class="co">#filters so that it only includes the TV shows</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(date_added , <span class="st">"2021"</span>)) <span class="sc">|&gt;</span> <span class="co">#filters so that it only includes those added in 2021</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(listed_in, <span class="st">"Comedies"</span>)) <span class="sc">|&gt;</span> <span class="co">#filters so that it includes those with "Comedies" in their genre</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">season =</span> <span class="fu">str_sub</span>(duration, <span class="dv">1</span>, <span class="dv">1</span>)) <span class="sc">|&gt;</span>  <span class="co">#filters out the word "season"</span></span>
 <span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(type, title, season) <span class="sc">|&gt;</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y =</span> season)) <span class="sc">+</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> season)) <span class="sc">+</span> <span class="co">#creates bar plot</span></span>
 <span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
 <span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
 <span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Season and Show Count of Comedy TV Shows Added </span><span class="sc">\n</span><span class="st">\ on Netflix in 2021"</span>,</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Number of Shows"</span>,</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Number of Seasons"</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Number of Seasons"</span>,</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Number of Shows"</span></span>
 <span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
 <span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="miniproj_2_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="miniproj_2_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" alt="The bar graph is titled: Season and Show count of comedy tv shows added on Netflix in 2021. The x-axis is the number of seasons and the y-axis is the number of shows. The plot shows a graph that's right-skewed." width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 <p>The bar graph reveals the frequency of comedy shows added on Netflix in 2021 to have a certain number of seasons. It is evident that majority of the comedy shows only have 1 season.</p>
+<section id="christmas-analysis" class="level4">
+<h4 class="anchored" data-anchor-id="christmas-analysis">Christmas Analysis</h4>
+<p>This specific analysis is a little more personal. I always enjoy Christmas movies, so I thought that I could gather a list of TV shows and movies added on Christmas Eve to expand my list of Christmas media.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>Christmas_eve <span class="ot">&lt;-</span> netflix <span class="sc">|&gt;</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(title, type, date_added, listed_in) <span class="sc">|&gt;</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">first_listed =</span> <span class="fu">str_extract</span>(listed_in, <span class="st">"</span><span class="sc">\\</span><span class="st">w+"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Title_Type=</span>  <span class="fu">str_c</span>(title, type, first_listed, <span class="at">sep=</span><span class="st">': '</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Date =</span> <span class="fu">str_extract</span>(date_added, <span class="st">".+(?=,)"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(title, type, date_added, listed_in) <span class="sc">|&gt;</span> </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">first_listed =</span> <span class="fu">str_extract</span>(listed_in, <span class="st">"</span><span class="sc">\\</span><span class="st">w+"</span>)) <span class="sc">|&gt;</span> <span class="co">#filters so that it only includes the first genre they're listed in</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Title_Type=</span>  <span class="fu">str_c</span>(title, type, first_listed, <span class="at">sep=</span><span class="st">': '</span>)) <span class="sc">|&gt;</span> <span class="co">#creates a string with title: type: genre</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Date =</span> <span class="fu">str_extract</span>(date_added, <span class="st">".+(?=,)"</span>)) <span class="sc">|&gt;</span> <span class="co">#removes the year from date_added column</span></span>
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Genre =</span> listed_in) <span class="sc">|&gt;</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Date <span class="sc">==</span> <span class="st">"December 24"</span><span class="sc">|</span> Genre <span class="sc">==</span> <span class="st">"TV"</span>)<span class="sc">|&gt;</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(Title_Type, Date) </span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Date <span class="sc">==</span> <span class="st">"December 24"</span><span class="sc">|</span> Genre <span class="sc">==</span> <span class="st">"TV"</span>)<span class="sc">|&gt;</span> <span class="co">#filters so that it inludes those added on December 24 and are listed as TV</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(Title_Type) </span>
 <span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="fu">as_tibble</span>(Christmas_eve)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 9 × 2
-  Title_Type                                           Date       
-  &lt;chr&gt;                                                &lt;chr&gt;      
-1 Bridezilla: Movie: Comedies                          December 24
-2 Cemara's Family: Movie: Children                     December 24
-3 Hello, Love, Goodbye: Movie: Dramas                  December 24
-4 CAROLE &amp; TUESDAY: TV Show: Anime                     December 24
-5 Como caído del cielo: Movie: Comedies                December 24
-6 John Mulaney &amp; The Sack Lunch Bunch: Movie: Children December 24
-7 Lost in Space: TV Show: TV                           December 24
-8 Stand Up and Away! with Brian Regan: TV Show: Stand  December 24
-9 Way Back into Love: TV Show: International           December 24</code></pre>
+<pre><code># A tibble: 9 × 1
+  Title_Type                                          
+  &lt;chr&gt;                                               
+1 Bridezilla: Movie: Comedies                         
+2 Cemara's Family: Movie: Children                    
+3 Hello, Love, Goodbye: Movie: Dramas                 
+4 CAROLE &amp; TUESDAY: TV Show: Anime                    
+5 Como caído del cielo: Movie: Comedies               
+6 John Mulaney &amp; The Sack Lunch Bunch: Movie: Children
+7 Lost in Space: TV Show: TV                          
+8 Stand Up and Away! with Brian Regan: TV Show: Stand 
+9 Way Back into Love: TV Show: International          </code></pre>
 </div>
 </div>
-<p>The table classifies the titles added on Netflix on December 24 (with varying years) with their type (TV Show or Movie) and the first genre they are listed under.</p>
+<p>The table classifies the titles added on Netflix on December 24 (with varying years) with their type (TV Show or Movie) and the first genre they are listed under. However, some of them aren’t Christmas movies, like Bridezilla and Hello, Love, Goodbye. So, I decided to dig deeper into this data set.</p>
+<p>Instead of only looking at the date added, I thought that if a description had the word “Christmas” in it, then maybe the likelihood of getting a Christmas movie or TV show would be higher.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>Christmas <span class="ot">&lt;-</span> netflix <span class="sc">|&gt;</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(title, type, date_added, listed_in, description) <span class="sc">|&gt;</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(description, <span class="st">"Christmas"</span>)) <span class="sc">|&gt;</span> <span class="co">#filters so that it only includes titles with Christmas in its description</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">first_listed =</span> <span class="fu">str_extract</span>(listed_in, <span class="st">"</span><span class="sc">\\</span><span class="st">w+"</span>)) <span class="sc">|&gt;</span> <span class="co">#only includes the first genre they're listed in</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Date =</span> <span class="fu">str_extract</span>(date_added, <span class="st">"</span><span class="sc">\\</span><span class="st">w{3}"</span>)) <span class="sc">|&gt;</span> <span class="co">#only includes the first three letters of the month for the date they're added</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Date =</span> <span class="fu">as.factor</span>(Date)) <span class="sc">|&gt;</span> <span class="co">#factors Date column</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Date =</span> <span class="fu">fct_relevel</span>(Date, <span class="fu">c</span>(<span class="st">"Jan"</span>, <span class="st">"Feb"</span>, <span class="st">"Mar"</span>, <span class="st">"Jun"</span>, <span class="st">"Jul"</span>, <span class="st">"Oct"</span>, <span class="st">"Nov"</span>, <span class="st">"Dec"</span>))) <span class="sc">|&gt;</span> <span class="co">#had to reorder the months </span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Title_Type =</span>  <span class="fu">str_c</span>(title, type, first_listed, <span class="at">sep=</span><span class="st">': '</span>)) <span class="sc">|&gt;</span> <span class="co">#creates a string with title:type:genre</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(Title_Type, Date) </span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(Christmas)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                     Title_Type Date
+1         Love Is a Story: Movie: International  Jun
+2    Home for Christmas: TV Show: International  Dec
+3    An Unremarkable Christmas: Movie: Comedies  Dec
+4 How To Ruin Christmas: TV Show: International  Dec
+5       A California Christmas: Movie: Comedies  Dec
+6      A Trash Truck Christmas: Movie: Children  Dec</code></pre>
+</div>
+</div>
+<p>The table classifies titles on Netflix with the word “Christmas” in its description with their title, type, first genre listed. The column ‘Date’ was cleaned up so that it would only include the first three letters of the months. By only including descriptions that have the word “Christmas” in it, I was able to retrieve a greater list of Christmas movies, as seen from the tibble above.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">#creates a bar plot with months as x-axis</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>Christmas <span class="sc">|&gt;</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Date)) <span class="sc">+</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">fill =</span> <span class="st">"darkgreen"</span>) <span class="sc">+</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Count of Movies and TV Shows based on Month Added"</span>,</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Month"</span>, </span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Count"</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">color =</span> <span class="st">"darkred"</span>)</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="miniproj_2_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" alt="The bar graph is titled Count of Movies and TV shows based on month added. The x-axis is the month and the y-axis is the count of the titles. The bars are colored in dark green and the axes titles are colored in dark red." width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>After not getting a list of Christmas movies after filtering titles added on December 24, I also created this bar graph from the table above it to see when such titles with “Christmas” in its description are added on Netflix. From the bar graph, it appears that majority of them are added on December and November, so maybe Netflix adds them throughout the month of December and not just Christmas Eve. I also found it quite surprising that after observing this graph, there’s quite a couple of titles added in July and July, months I wouldn’t expect to see Christmas movies added on Netflix. The titles added in June and July are seen in the table below.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>July <span class="ot">&lt;-</span> Christmas<span class="sc">|&gt;</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(Date, <span class="st">"Jul"</span>))  <span class="co">#creates a table with just titles with Christmas in its description that are added in July</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>June <span class="ot">&lt;-</span> Christmas <span class="sc">|&gt;</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(Date, <span class="st">"Jun"</span>)) <span class="co">#creates a table with just titles with Christmas in its description that are added in June</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>Summer <span class="ot">&lt;-</span> <span class="fu">rbind</span>(July, June) <span class="co">#creates a table combining the two tables above it</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>Summer</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                          Title_Type Date
+1 Zipi &amp; Zape y la Isla del Capitan: Movie: Children  Jul
+2              Love Is a Story: Movie: International  Jun
+3             Dr. Seuss' The Grinch: Movie: Children  Jun
+4    How the Grinch Stole Christmas: Movie: Children  Jun</code></pre>
+</div>
+</div>
 
 
 </section>

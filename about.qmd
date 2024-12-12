@@ -1,17 +1,16 @@
 ---
-image: media/building2.JPG
+image: media/self.jpg
 toc: false
 about: 
   template: jolla
-  image-shape: rectangle
-  image-width: 50em
-  image-alt: building on Broadway
+  image-shape: round
+  image-width: 17em
 ---
 
 #### About Author
 
-I was born in the Philippines but I've been living in Los Angeles since I was nine (the building pictured is in Downtown LA). I'm currently studying at Pomona College for mathematics and statistics. I love crafting, specifically knitting and sewing (the image on my home page is a design that I sewed onto a shirt).
+I was born in the Philippines but I've been living in Los Angeles since I was nine. I'm currently studying at Pomona College for mathematics and statistics. I love crafting, specifically knitting and sewing (the image on my home page is a design that I sewed onto a shirt).
 
 #### About this site
 
-This site currently contains projects for my Foundations of Data Science DS002 class.
+This site currently contains various projects created using R and showcasing many visual analyses. Feel free to look around!
